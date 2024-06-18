@@ -17,6 +17,10 @@ const StoreSchema = new mongoose.Schema({
     required: true,
     index: true
   },
+  customers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Customer'
+  }]
 }, {
   timestamps: true
 });
