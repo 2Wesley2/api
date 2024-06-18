@@ -4,12 +4,12 @@ const ProfileSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    require: true,
+    required: true,
     index: true
   },
   store: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Loja',
+    ref: 'Store',
     required: true,
     index: true
   },
@@ -33,9 +33,7 @@ const ProfileSchema = new mongoose.Schema({
     required: true
   }
 
-}, {
-  timestamps: true
-});
+}, { timestamps: true });
 
 ProfileSchema.index({ user: 1, store: 1 });
 

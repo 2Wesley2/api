@@ -17,14 +17,12 @@ const StoreSchema = new mongoose.Schema({
     required: true,
     index: true
   },
-  customers: [{
+  people: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Customer',
+    ref: 'Person',
     index: true
   }]
-}, {
-  timestamps: true
-});
+}, { timestamps: true });
 
 StoreSchema.index({ name: 1, address: 1 });
 
