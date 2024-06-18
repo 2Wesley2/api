@@ -19,10 +19,13 @@ const StoreSchema = new mongoose.Schema({
   },
   customers: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Customer'
+    ref: 'Customer',
+    index: true
   }]
 }, {
   timestamps: true
 });
+
+StoreSchema.index({ name: 1, address: 1 });
 
 module.exports = mongoose.model('Store', StoreSchema);

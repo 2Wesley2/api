@@ -4,12 +4,14 @@ const ProfileSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    require: true
+    require: true,
+    index: true
   },
   store: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Loja',
-    required: true
+    required: true,
+    index: true
   },
   name: {
     type: String,
@@ -34,5 +36,7 @@ const ProfileSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+ProfileSchema.index({ user: 1, store: 1 });
 
 module.exports = mongoose.model('Profile', ProfileSchema); 
