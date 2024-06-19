@@ -9,6 +9,6 @@ router.post('/login', UserController.loginUser);
 router.get('/', authMiddleware, roleMiddleware(['admin', 'lojista']), UserController.getUsers);
 router.get('/:id', authMiddleware, roleMiddleware(['admin', 'lojista']), UserController.getUserById);
 router.put('/:id', authMiddleware, roleMiddleware(['admin', 'lojista']), UserController.updateUser);
-router.delete('/:id', authMiddleware, roleMiddleware(['admin']), UserController.deleteUser);
+router.delete('/:id', authMiddleware, roleMiddleware(['admin, lojista']), UserController.deleteUser);
 
 module.exports = router;

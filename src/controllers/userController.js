@@ -44,6 +44,9 @@ exports.loginUser = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
   try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Acesso negado. Apenas administradores podem acessar todos os usuários.' });
+    }
     const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
@@ -54,6 +57,9 @@ exports.getUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+    if (req.user.role !== 'admin' && req.user.id !== user._id.toString()) {
+      return res.status(403).json({ message: 'Acesso negado. Você só pode acessar suas próprias informações.' });
+    }
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
@@ -65,15 +71,30 @@ exports.getUserById = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { email, password },
       { new: true, runValidators: true }
     );
+
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
+
+    if (req.user.role !== 'admin' && req.user.id !== user._id.toString()) {
+      return res.status(403).json({ message: 'Acesso negado. Você só pode atualizar suas próprias informações.' });
+    }
+
+    const { email, password } = req.body;
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+    if (email) {
+      user.email = email;
+    }
+    await user.save();
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao atualizar usuário', error });
@@ -86,6 +107,11 @@ exports.deleteUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
+
+    if (req.user.role !== 'admin' && req.user.id !== user._id.toString()) {
+      return res.status(403).json({ message: 'Acesso negado. Você só pode deletar suas próprias informações.' });
+    }
+    await user.remove();
     res.status(200).json({ message: 'Usuário deletado com sucesso' });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao deletar usuário', error });
