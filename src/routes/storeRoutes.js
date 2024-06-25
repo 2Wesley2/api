@@ -5,7 +5,7 @@ const {
   getStores,
   getStoreById,
   updateStore,
-  deleteStore
+  deleteStore,
 } = require('../controllers/storeController');
 
 router.post('/', createStore);

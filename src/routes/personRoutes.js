@@ -5,7 +5,7 @@ const {
   getPeople,
   getPersonById,
   updatePerson,
-  deletePerson
+  deletePerson,
 } = require('../controllers/personController');
 
 router.post('/', createPerson);

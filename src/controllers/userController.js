@@ -5,7 +5,10 @@ const jwt = require('jsonwebtoken');
 exports.registerUser = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Acesso negado. Apenas administradores podem registrar novos usuários.' });
+      return res.status(403).json({
+        message:
+          'Acesso negado. Apenas administradores podem registrar novos usuários.',
+      });
     }
     const { email, password, role } = req.body;
     const salt = await bcrypt.genSalt(10);
@@ -34,7 +37,7 @@ exports.loginUser = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '1h' },
     );
     res.json({ token });
   } catch (error) {
@@ -45,7 +48,10 @@ exports.loginUser = async (req, res) => {
 exports.getUsers = async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Acesso negado. Apenas administradores podem acessar todos os usuários.' });
+      return res.status(403).json({
+        message:
+          'Acesso negado. Apenas administradores podem acessar todos os usuários.',
+      });
     }
     const users = await User.find();
     res.status(200).json(users);
@@ -58,7 +64,10 @@ exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (req.user.role !== 'admin' && req.user.id !== user._id.toString()) {
-      return res.status(403).json({ message: 'Acesso negado. Você só pode acessar suas próprias informações.' });
+      return res.status(403).json({
+        message:
+          'Acesso negado. Você só pode acessar suas próprias informações.',
+      });
     }
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
@@ -74,7 +83,7 @@ exports.updateUser = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { email, password },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!user) {
@@ -82,7 +91,10 @@ exports.updateUser = async (req, res) => {
     }
 
     if (req.user.role !== 'admin' && req.user.id !== user._id.toString()) {
-      return res.status(403).json({ message: 'Acesso negado. Você só pode atualizar suas próprias informações.' });
+      return res.status(403).json({
+        message:
+          'Acesso negado. Você só pode atualizar suas próprias informações.',
+      });
     }
 
     const { email, password } = req.body;
@@ -109,7 +121,10 @@ exports.deleteUser = async (req, res) => {
     }
 
     if (req.user.role !== 'admin' && req.user.id !== user._id.toString()) {
-      return res.status(403).json({ message: 'Acesso negado. Você só pode deletar suas próprias informações.' });
+      return res.status(403).json({
+        message:
+          'Acesso negado. Você só pode deletar suas próprias informações.',
+      });
     }
     await user.remove();
     res.status(200).json({ message: 'Usuário deletado com sucesso' });

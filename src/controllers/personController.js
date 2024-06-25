@@ -38,7 +38,7 @@ exports.updatePerson = async (req, res) => {
     const person = await Person.findByIdAndUpdate(
       req.params.id,
       { name, phone, email, role },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!person) {
       return res.status(404).json({ message: 'Pessoa não encontrada' });

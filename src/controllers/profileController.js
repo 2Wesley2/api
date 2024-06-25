@@ -2,8 +2,17 @@ const Profile = require('../models/Profile');
 
 exports.createProfile = async (req, res) => {
   try {
-    const { user, store, name, surname, contact, email, permissions } = req.body;
-    const newProfile = new Profile({ user, store, name, surname, contact, email, permissions });
+    const { user, store, name, surname, contact, email, permissions } =
+      req.body;
+    const newProfile = new Profile({
+      user,
+      store,
+      name,
+      surname,
+      contact,
+      email,
+      permissions,
+    });
     await newProfile.save();
     res.status(201).json(newProfile);
   } catch (error) {
@@ -34,11 +43,12 @@ exports.getProfileById = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { user, store, name, surname, contact, email, permissions } = req.body;
+    const { user, store, name, surname, contact, email, permissions } =
+      req.body;
     const profile = await Profile.findByIdAndUpdate(
       req.params.id,
       { user, store, name, surname, contact, email, permissions },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!profile) {
       return res.status(404).json({ message: 'Perfil não encontrado' });

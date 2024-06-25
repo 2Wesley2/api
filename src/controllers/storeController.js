@@ -7,9 +7,8 @@ exports.createStore = async (req, res) => {
     await newStore.save();
     res.status(201).json(newStore);
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
-
 };
 
 exports.getStores = async (req, res) => {
@@ -39,7 +38,7 @@ exports.updateStore = async (req, res) => {
     const store = await Store.findByIdAndUpdate(
       req.params.id,
       { name, address, contact, people },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!store) {
       return res.status(404).json({ message: 'Loja não encontrada' });
