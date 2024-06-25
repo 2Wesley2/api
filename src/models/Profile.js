@@ -8,32 +8,15 @@ const ProfileSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    store: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Store',
-      required: true,
-      index: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    surname: {
-      type: String,
-      required: true,
-    },
-    contact: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    permissions: {
-      type: [String],
-      required: true,
-    },
+    stores: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Store',
+        required: true,
+        index: true,
+      },
+    ],
+    role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' },
   },
   { timestamps: true },
 );

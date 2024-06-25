@@ -2,16 +2,10 @@ const mongoose = require('mongoose');
 
 const PersonSchema = new mongoose.Schema(
   {
+    cpf: { type: String, required: true, unique: true },
     firtsName: { type: String, required: true },
-    phone: {
-      type: String,
-      required: true,
-      index: true,
-    },
-    role: {
-      type: [String],
-      index: true,
-    },
+    lastName: { type: String, required: true },
+    birthDate: { type: Date, required: true },
   },
   { timestamps: true },
 );

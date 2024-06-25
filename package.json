@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-     "format": "prettier --write 'src/**/*.{js,json,css,md}'"
+    "format": "prettier --write 'src/**/*.{js,json,css,md}'"
   },
   "keywords": [],
   "author": "",

@@ -7,7 +7,6 @@ const personRoutes = require('./src/routes/personRoutes');
 const profileRoutes = require('./src/routes/profileRoutes');
 const storeRoutes = require('./src/routes/storeRoutes');
 
-
 dotenv.config();
 
 const app = express();
@@ -20,8 +19,6 @@ app.use('/users', userRoutes);
 app.use('/people', personRoutes);
 app.use('/profiles', profileRoutes);
 app.use('/stores', storeRoutes);
-
-
 
 const PORT = process.env.PORT || 5000;
 

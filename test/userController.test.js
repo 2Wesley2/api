@@ -10,30 +10,29 @@ describe('User Endpoints', () => {
   let storekeeperId;
 
   beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
     // Limpa todos os usuários antes de iniciar os testes
     await User.deleteMany({});
 
     // Registro do administrador
-    const adminRegisterRes = await request(app)
-      .post('/users/register')
-      .send({
-        email: 'admin@example.com',
-        password: 'adminpassword',
-        role: 'admin'
-      });
+    const adminRegisterRes = await request(app).post('/users/register').send({
+      email: 'admin@example.com',
+      password: 'adminpassword',
+      role: 'admin',
+    });
 
     // Verificação da criação do usuário admin
     expect(adminRegisterRes.statusCode).toEqual(201);
 
     // Login do administrador para obter o token
-    const adminLoginRes = await request(app)
-      .post('/users/login')
-      .send({
-        email: 'admin@example.com',
-        password: 'adminpassword'
-      });
+    const adminLoginRes = await request(app).post('/users/login').send({
+      email: 'admin@example.com',
+      password: 'adminpassword',
+    });
 
     // Verificação do login do admin e obtenção do token
     expect(adminLoginRes.statusCode).toEqual(200);
@@ -47,7 +46,7 @@ describe('User Endpoints', () => {
       .send({
         email: 'storekeeper@example.com',
         password: 'storepassword',
-        role: 'lojista'
+        role: 'lojista',
       });
 
     // Verificação da criação do usuário lojista
@@ -55,12 +54,10 @@ describe('User Endpoints', () => {
     storekeeperId = storekeeperRes.body._id;
 
     // Login do lojista para obter o token
-    const storekeeperLoginRes = await request(app)
-      .post('/users/login')
-      .send({
-        email: 'storekeeper@example.com',
-        password: 'storepassword'
-      });
+    const storekeeperLoginRes = await request(app).post('/users/login').send({
+      email: 'storekeeper@example.com',
+      password: 'storepassword',
+    });
 
     expect(storekeeperLoginRes.statusCode).toEqual(200);
     storekeeperToken = storekeeperLoginRes.body.token;
@@ -71,12 +68,10 @@ describe('User Endpoints', () => {
   });
 
   it('should login an admin user', async () => {
-    const res = await request(app)
-      .post('/users/login')
-      .send({
-        email: 'admin@example.com',
-        password: 'adminpassword'
-      });
+    const res = await request(app).post('/users/login').send({
+      email: 'admin@example.com',
+      password: 'adminpassword',
+    });
 
     if (res.statusCode !== 200) {
       console.error('Erro no login do admin:', res.body);
@@ -106,15 +101,21 @@ describe('User Endpoints', () => {
       .send({
         email: 'newuser@example.com',
         password: 'newpassword',
-        role: 'lojista'
+        role: 'lojista',
       });
 
     if (res.statusCode !== 403) {
-      console.error('Erro ao impedir que o lojista registre um usuário:', res.body);
+      console.error(
+        'Erro ao impedir que o lojista registre um usuário:',
+        res.body,
+      );
     }
 
     expect(res.statusCode).toEqual(403);
-    expect(res.body).toHaveProperty('message', 'Acesso negado. Apenas administradores podem registrar novos usuários.');
+    expect(res.body).toHaveProperty(
+      'message',
+      'Acesso negado. Apenas administradores podem registrar novos usuários.',
+    );
   });
 
   it('should get own user info as storekeeper', async () => {
@@ -123,7 +124,10 @@ describe('User Endpoints', () => {
       .set('Authorization', `Bearer ${storekeeperToken}`);
 
     if (res.statusCode !== 200) {
-      console.error('Erro ao obter informações do próprio usuário como lojista:', res.body);
+      console.error(
+        'Erro ao obter informações do próprio usuário como lojista:',
+        res.body,
+      );
     }
 
     expect(res.statusCode).toEqual(200);
@@ -136,11 +140,17 @@ describe('User Endpoints', () => {
       .set('Authorization', `Bearer ${storekeeperToken}`);
 
     if (res.statusCode !== 403) {
-      console.error('Erro ao impedir que o lojista obtenha informações de outro usuário:', res.body);
+      console.error(
+        'Erro ao impedir que o lojista obtenha informações de outro usuário:',
+        res.body,
+      );
     }
 
     expect(res.statusCode).toEqual(403);
-    expect(res.body).toHaveProperty('message', 'Acesso negado. Você só pode acessar suas próprias informações.');
+    expect(res.body).toHaveProperty(
+      'message',
+      'Acesso negado. Você só pode acessar suas próprias informações.',
+    );
   });
 
   it('should update own user info as storekeeper', async () => {
@@ -148,11 +158,14 @@ describe('User Endpoints', () => {
       .put(`/users/${storekeeperId}`)
       .set('Authorization', `Bearer ${storekeeperToken}`)
       .send({
-        email: 'updatedstorekeeper@example.com'
+        email: 'updatedstorekeeper@example.com',
       });
 
     if (res.statusCode !== 200) {
-      console.error('Erro ao atualizar informações do próprio usuário como lojista:', res.body);
+      console.error(
+        'Erro ao atualizar informações do próprio usuário como lojista:',
+        res.body,
+      );
     }
 
     expect(res.statusCode).toEqual(200);
@@ -164,15 +177,21 @@ describe('User Endpoints', () => {
       .put(`/users/${adminId}`)
       .set('Authorization', `Bearer ${storekeeperToken}`)
       .send({
-        email: 'updatedadmin@example.com'
+        email: 'updatedadmin@example.com',
       });
 
     if (res.statusCode !== 403) {
-      console.error('Erro ao impedir que o lojista atualize informações de outro usuário:', res.body);
+      console.error(
+        'Erro ao impedir que o lojista atualize informações de outro usuário:',
+        res.body,
+      );
     }
 
     expect(res.statusCode).toEqual(403);
-    expect(res.body).toHaveProperty('message', 'Acesso negado. Você só pode atualizar suas próprias informações.');
+    expect(res.body).toHaveProperty(
+      'message',
+      'Acesso negado. Você só pode atualizar suas próprias informações.',
+    );
   });
 
   it('should delete own user as storekeeper', async () => {
@@ -181,7 +200,10 @@ describe('User Endpoints', () => {
       .set('Authorization', `Bearer ${storekeeperToken}`);
 
     if (res.statusCode !== 200) {
-      console.error('Erro ao deletar o próprio usuário como lojista:', res.body);
+      console.error(
+        'Erro ao deletar o próprio usuário como lojista:',
+        res.body,
+      );
     }
 
     expect(res.statusCode).toEqual(200);
@@ -194,10 +216,16 @@ describe('User Endpoints', () => {
       .set('Authorization', `Bearer ${storekeeperToken}`);
 
     if (res.statusCode !== 403) {
-      console.error('Erro ao impedir que o lojista delete outro usuário:', res.body);
+      console.error(
+        'Erro ao impedir que o lojista delete outro usuário:',
+        res.body,
+      );
     }
 
     expect(res.statusCode).toEqual(403);
-    expect(res.body).toHaveProperty('message', 'Acesso negado. Você só pode deletar suas próprias informações.');
+    expect(res.body).toHaveProperty(
+      'message',
+      'Acesso negado. Você só pode deletar suas próprias informações.',
+    );
   });
 });
