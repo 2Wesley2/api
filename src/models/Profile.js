@@ -22,6 +22,6 @@ const ProfileSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-ProfileSchema.index({ user: 1, stores: 1 });
+ProfileSchema.index({ user: 1, 'stores._id': 1 }, { unique: true });
 
 module.exports = mongoose.model('Profile', ProfileSchema);

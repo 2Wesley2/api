@@ -35,6 +35,6 @@ const StoreSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-StoreSchema.index({ storeName: 1, storeAddress: 1 });
+StoreSchema.index({ storeName: 1, storeAddress: 1 }, { unique: true });
 
 module.exports = mongoose.model('Store', StoreSchema);
