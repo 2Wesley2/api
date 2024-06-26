@@ -59,9 +59,7 @@ exports.loginUser = async (req, res) => {
       .lean();
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: 'Por favor, forneça um email ou um telefone.' });
+      return res.status(404).json({ message: 'Usuário não encontado' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
