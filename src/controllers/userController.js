@@ -1,50 +1,27 @@
 const User = require('../models/User');
-const Role = require('../models/Role');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { checkPermission } = require('../helpers/permissionHelpers');
+const { createPerson } = require('./personController');
 
 exports.registerUser = async (req, res) => {
   try {
-    const { email, password, phone, person, role } = req.body;
+    const { email, password, phone } = req.body;
+    const personData = req.personData;
+    const userRole = req.userRole;
 
-    if (!email && !phone) {
-      return res
-        .status(400)
-        .json({ message: 'Por favor, forneça um email ou um telefone.' });
+    let person;
+    try {
+      person = await createPerson(personData);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
     }
-
-    const userRole = await Role.findById(role).lean();
-    if (!userRole) {
-      return res.status(400).json({ message: 'Função inválida' });
-    }
-
-    if (userRole.roleName === 'admin') {
-      const isAdmin = await checkPermission(req.user.id, 'admin');
-      if (!isAdmin) {
-        return res.status(403).json({
-          message: 'Apenas administradores podem criar outros administradores.',
-        });
-      }
-    }
-
-    const existingUser = await User.findOne({
-      $or: [{ email }, { phone }, { person }],
-    });
-
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: 'Email, telefone ou pessoa já cadastrados.' });
-    }
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       email,
       password: hashedPassword,
       phone,
-      person,
+      person: person._id,
       role: userRole._id,
     });
     await newUser.save();
