@@ -19,7 +19,7 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ message: 'Função inválida' });
     }
 
-    if (userRole.name === 'admin') {
+    if (userRole.roleName === 'admin') {
       const isAdmin = await checkPermission(req.user.id, 'admin');
       if (!isAdmin) {
         return res.status(403).json({
