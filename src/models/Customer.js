@@ -13,6 +13,4 @@ const CustomerSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-CustomerSchema.index({ person: 1 });
-
 module.exports = mongoose.model('Customer', CustomerSchema);
