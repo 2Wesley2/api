@@ -7,6 +7,7 @@ const ProfileSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
       index: true,
+      unique: true,
     },
     stores: [
       {
@@ -16,11 +17,11 @@ const ProfileSchema = new mongoose.Schema(
         index: true,
       },
     ],
-    role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' },
+    role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role', index: true },
   },
   { timestamps: true },
 );
 
-ProfileSchema.index({ user: 1, store: 1 });
+ProfileSchema.index({ user: 1, stores: 1 });
 
 module.exports = mongoose.model('Profile', ProfileSchema);

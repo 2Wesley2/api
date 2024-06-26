@@ -10,4 +10,7 @@ const PersonSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+PersonSchema.index({ firstName: 1, lastName: 1 });
+PersonSchema.index({ cpf: 1 });
+
 module.exports = mongoose.model('Person', PersonSchema);

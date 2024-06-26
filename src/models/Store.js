@@ -2,25 +2,32 @@ const mongoose = require('mongoose');
 
 const StoreSchema = new mongoose.Schema(
   {
-    name: {
+    storeName: {
       type: String,
       required: true,
       index: true,
     },
-    address: {
+    storeAddress: {
       type: String,
       required: true,
       index: true,
     },
-    contact: {
+    storeContact: {
       type: String,
       required: true,
       index: true,
     },
-    people: [
+    profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Profile',
+      required: true,
+      index: true,
+      unique: true,
+    },
+    customers: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Person',
+        ref: 'Customer',
         index: true,
       },
     ],
@@ -28,6 +35,6 @@ const StoreSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-StoreSchema.index({ name: 1, address: 1 });
+StoreSchema.index({ storeName: 1, storeAddress: 1 });
 
 module.exports = mongoose.model('Store', StoreSchema);
