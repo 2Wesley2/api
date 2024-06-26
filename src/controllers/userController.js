@@ -28,6 +28,16 @@ exports.registerUser = async (req, res) => {
       }
     }
 
+    const existingUser = await User.findOne({
+      $or: [{ email }, { phone }, { person }],
+    });
+
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: 'Email, telefone ou pessoa já cadastrados.' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
