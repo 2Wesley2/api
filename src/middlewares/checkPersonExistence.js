@@ -5,7 +5,7 @@ const checkPersonExistence = async (req, res, next) => {
     const { personData } = req.body;
     const person = await Person.findOne({ cpf: personData.cpf }).lean();
     if (person) {
-      return res.status(400).json({ message: 'CPF já cadastrado' });
+      return res.status(409).json({ message: 'CPF já cadastrado' });
     }
     req.personData = personData;
     next();

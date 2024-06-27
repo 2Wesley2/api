@@ -16,7 +16,7 @@ const checkEmailPhoneUniqueness = async (req, res, next) => {
 
     if (existingUser) {
       return res
-        .status(400)
+        .status(409)
         .json({ message: 'Email ou telefone já cadastrados.' });
     }
 

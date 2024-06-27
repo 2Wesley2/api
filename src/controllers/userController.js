@@ -7,7 +7,7 @@ exports.registerUser = async (req, res) => {
   try {
     const { email, password, phone } = req.body;
     const personData = req.personData;
-    const userRole = req.userRole;
+    const rolePermission = req.rolePermission;
 
     let person;
     try {
@@ -22,7 +22,7 @@ exports.registerUser = async (req, res) => {
       password: hashedPassword,
       phone,
       person: person._id,
-      role: userRole._id,
+      rolePermission: rolePermission._id,
     });
     await newUser.save();
     res.status(201).json(newUser);
@@ -51,7 +51,7 @@ exports.loginUser = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Credenciais inválidas' });
+      return res.status(401).json({ message: 'Credenciais inválidas' });
     }
 
     const token = jwt.sign(

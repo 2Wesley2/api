@@ -8,14 +8,14 @@ const checkRoleAndPermission = async (req, res, next) => {
 
     const validRoles = process.env.VALID_ROLES.split(',');
     if (!validRoles.includes(role)) {
-      return res.status(400).json({
+      return res.status(404).json({
         message: 'Função inexistente',
       });
     }
 
     const roleDocument = await Role.findOne({ roleName: role }).lean();
     if (!roleDocument) {
-      return res.status(400).json({ message: 'Função não encontrada' });
+      return res.status(404).json({ message: 'Função não encontrada' });
     }
 
     const rolePermission = await RolePermission.findOne({
@@ -24,7 +24,7 @@ const checkRoleAndPermission = async (req, res, next) => {
       .populate('permissions')
       .lean();
     if (!rolePermission) {
-      return res.status(400).json({
+      return res.status(403).json({
         message: 'O usuário não tem esta permissão',
       });
     }
