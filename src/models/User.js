@@ -11,9 +11,9 @@ const UserSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
-    role: {
+    rolePermission: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Role',
+      ref: 'RolePermission',
       required: true,
     },
   },

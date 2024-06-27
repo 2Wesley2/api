@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const {
   registerUser,
-  loginUser,
+  /*loginUser,
   getUsers,
   getUserById,
   updateUser,
   deleteUser,
+  */
 } = require('../controllers/userController');
-const authMiddleware = require('../middlewares/authMiddleware');
+/*const authMiddleware = require('../middlewares/authMiddleware');*/
 const checkPersonExistence = require('../middlewares/checkPersonExistence');
 const checkEmailPhoneUniqueness = require('../middlewares/checkEmailPhoneUniqueness');
 const checkRoleAndPermission = require('../middlewares/checkRoleAndPermission');
@@ -24,10 +25,11 @@ router.post(
   checkRoleAndPermission, // Verifica a função e permissão do usuário
   registerUser, // Finalmente, chama o controlador para registrar o usuário
 );
+/*
 router.post('/login', validateAndSanitize, loginUser);
 router.get('/', authMiddleware, getUsers);
 router.get('/:id', authMiddleware, getUserById);
 router.put('/:id', authMiddleware, validateAndSanitize, updateUser);
 router.delete('/:id', authMiddleware, deleteUser);
-
+*/
 module.exports = router;

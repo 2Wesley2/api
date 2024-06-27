@@ -1,35 +1,35 @@
 const Role = require('../models/Role');
-const { checkPermission } = require('../helpers/permissionHelpers');
+const RolePermission = require('../models/RolePermission');
+require('dotenv').config();
 
 const checkRoleAndPermission = async (req, res, next) => {
   try {
     const { role } = req.body;
-    const validRoles = ['admin', 'retailer'];
+
+    const validRoles = process.env.VALID_ROLES.split(',');
     if (!validRoles.includes(role)) {
       return res.status(400).json({
-        message: 'Função inválida. Apenas admin e retailer são permitidos.',
+        message: 'Função inexistente',
       });
     }
-    const userRole = await Role.findById(role).lean();
 
-    if (!userRole) {
-      return res.status(400).json({ message: 'Função inválida' });
+    const roleDocument = await Role.findOne({ roleName: role }).lean();
+    if (!roleDocument) {
+      return res.status(400).json({ message: 'Função não encontrada' });
     }
 
-    if (userRole.roleName === 'admin') {
-      if (!req.user) {
-        return res
-          .status(401)
-          .json({ message: 'Acesso negado. Usuário não autenticado.' });
-      }
-      const isAdmin = await checkPermission(req.user.id, 'admin');
-      if (!isAdmin) {
-        return res.status(403).json({
-          message: 'Apenas administradores podem criar outros administradores.',
-        });
-      }
+    const rolePermission = await RolePermission.findOne({
+      role: roleDocument._id,
+    })
+      .populate('permissions')
+      .lean();
+    if (!rolePermission) {
+      return res.status(400).json({
+        message: 'O usuário não tem esta permissão',
+      });
     }
-    req.userRole = userRole;
+
+    req.rolePermission = rolePermission;
     next();
   } catch (error) {
     res

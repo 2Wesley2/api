@@ -17,7 +17,6 @@ const ProfileSchema = new mongoose.Schema(
         index: true,
       },
     ],
-    role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role', index: true },
   },
   { timestamps: true },
 );
