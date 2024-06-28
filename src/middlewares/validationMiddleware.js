@@ -10,6 +10,7 @@ const validateAndSanitize = [
     if (!isValidCPF(value)) {
       throw new Error('Formato Inválido');
     }
+    return true;
   }),
   (req, res, next) => {
     const errors = validationResult(req);

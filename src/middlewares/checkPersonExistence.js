@@ -5,19 +5,21 @@ const checkPersonExistence = async (req, res, next) => {
   const session = await mongoose.startTransaction();
   session.startTransaction();
   try {
-    const { personData } = req.body;
-    const person = await Person.findOne({ cpf: personData.cpf })
-      .session(session)
-      .lean();
+    const { cpf } = req.body;
+    const person = await Person.findOne({ cpf }).session(session).lean();
     if (person) {
       await session.abortTransaction();
       return res.status(409).json({ message: 'CPF já cadastrado' });
     }
-    req.personData = personData;
     await session.commitTransaction();
     next();
   } catch (error) {
     await session.abortTransaction();
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: 'CPF já cadastrado',
+      });
+    }
     res.status(500).json({
       message: 'Erro ao verificar CPF da pessoa',
       error: error.message,

@@ -5,10 +5,11 @@ const { createPerson } = require('./personController');
 
 exports.registerUser = async (req, res) => {
   try {
-    const { email, password, phone } = req.body;
-    const personData = req.personData;
+    const { email, password, phone, cpf, firstName, lastName, birthDate } =
+      req.body;
     const rolePermission = req.rolePermission;
 
+    const personData = { cpf, firstName, lastName, birthDate };
     let person;
     try {
       person = await createPerson(personData);
