@@ -13,7 +13,7 @@ const checkRoleAndPermission = async (req, res, next) => {
       });
     }
 
-    const roleDocument = await Role.findOne({ roleName: role }).lean();
+    const roleDocument = await Role.findById({ roleName: role }).lean();
     if (!roleDocument) {
       return res.status(404).json({ message: 'Função não encontrada' });
     }
