@@ -1,7 +1,7 @@
 const { check, validationResult } = require('express-validator');
 const isValidCPF = require('../utils/cpfValidator');
 
-const validateAndSanitize = [
+const validateAndSanitizeMiddleware = [
   check('email').isEmail().withMessage('Email inválido').normalizeEmail(),
   check('password')
     .isLength({ min: 8 })
@@ -22,5 +22,5 @@ const validateAndSanitize = [
 ];
 
 module.exports = {
-  validateAndSanitize,
+  validateAndSanitizeMiddleware,
 };

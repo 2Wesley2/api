@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
 
-const checkEmailPhoneUniqueness = async (req, res, next) => {
+const checkEmailPhoneUniquenessMiddleware = async (req, res, next) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
@@ -44,4 +44,4 @@ const checkEmailPhoneUniqueness = async (req, res, next) => {
   }
 };
 
-module.exports = checkEmailPhoneUniqueness;
+module.exports = checkEmailPhoneUniquenessMiddleware;

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Person = require('../models/Person');
 
-const checkPersonExistence = async (req, res, next) => {
-  const session = await mongoose.startTransaction();
+const checkPersonExistenceMiddleware = async (req, res, next) => {
+  const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const { cpf } = req.body;
@@ -29,4 +29,4 @@ const checkPersonExistence = async (req, res, next) => {
   }
 };
 
-module.exports = checkPersonExistence;
+module.exports = checkPersonExistenceMiddleware;
