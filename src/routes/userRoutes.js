@@ -3,6 +3,9 @@ const router = express.Router();
 const {
   registerRetailer,
 } = require('../controllers/userControllers/registerRetailer');
+const {
+  registerAdmin,
+} = require('../controllers/userControllers/registerAdmin');
 const { loginUser } = require('../controllers/userControllers/login');
 const { logoutUser } = require('../controllers/userControllers/logout');
 
@@ -13,6 +16,7 @@ const {
   validateAndSanitizeMiddleware,
 } = require('../middlewares/validateAndSanitizeMiddleware');
 const loginLimiter = require('../middlewares/loginRateLimiter');
+const isAdminMiddleware = require('../middlewares/isAdminMiddleware');
 
 router.post(
   '/register_retailer',
@@ -24,6 +28,13 @@ router.post(
 
 router.post('/login', loginLimiter, loginUser);
 router.post('/logout', authenticateTokenMiddleware, logoutUser);
+router.post(
+  '/registerAdmin',
+  authenticateTokenMiddleware,
+  isAdminMiddleware,
+  registerAdmin,
+);
+
 /*
 router.get('/', authMiddleware, getUsers);
 router.get('/:id', authMiddleware, getUserById);
