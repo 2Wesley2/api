@@ -1,8 +1,8 @@
-const User = require('../models/User');
+const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
-const { createPerson } = require('./personController');
-const Role = require('../models/Role');
-const RolePermission = require('../models/RolePermission');
+const { createPerson } = require('../personController');
+const Role = require('../../models/Role');
+const RolePermission = require('../../models/RolePermission');
 
 exports.registerRetailer = async (req, res) => {
   try {

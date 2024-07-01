@@ -2,19 +2,15 @@ const express = require('express');
 const router = express.Router();
 const {
   registerRetailer,
-  /*loginUser,
-  getUsers,
-  getUserById,
-  updateUser,
-  deleteUser,
-  */
-} = require('../controllers/userController');
+} = require('../controllers/userControllers/registerRetailer');
+const { loginUser } = require('../controllers/userControllers/login');
 /*const authMiddleware = require('../middlewares/authMiddleware');*/
 const checkPersonExistenceMiddleware = require('../middlewares/checkPersonExistenceMiddleware');
 const checkEmailPhoneUniquenessMiddleware = require('../middlewares/checkEmailPhoneUniquenessMiddleware');
 const {
   validateAndSanitizeMiddleware,
 } = require('../middlewares/validateAndSanitizeMiddleware');
+const loginLimiter = require('../middlewares/loginRateLimiter');
 
 router.post(
   '/register_retailer',
@@ -23,8 +19,9 @@ router.post(
   checkEmailPhoneUniquenessMiddleware, // Verifica se email ou telefone já estão em uso
   registerRetailer, // Finalmente, chama o controlador para registrar o usuário
 );
+
+router.post('/login', loginLimiter, loginUser);
 /*
-router.post('/login', validateAndSanitize, loginUser);
 router.get('/', authMiddleware, getUsers);
 router.get('/:id', authMiddleware, getUserById);
 router.put('/:id', authMiddleware, validateAndSanitize, updateUser);
