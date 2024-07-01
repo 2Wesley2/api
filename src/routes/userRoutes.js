@@ -4,7 +4,9 @@ const {
   registerRetailer,
 } = require('../controllers/userControllers/registerRetailer');
 const { loginUser } = require('../controllers/userControllers/login');
-/*const authMiddleware = require('../middlewares/authMiddleware');*/
+const { logoutUser } = require('../controllers/userControllers/logout');
+
+const authenticateTokenMiddleware = require('../middlewares/authenticateTokenMiddleware');
 const checkPersonExistenceMiddleware = require('../middlewares/checkPersonExistenceMiddleware');
 const checkEmailPhoneUniquenessMiddleware = require('../middlewares/checkEmailPhoneUniquenessMiddleware');
 const {
@@ -21,6 +23,7 @@ router.post(
 );
 
 router.post('/login', loginLimiter, loginUser);
+router.post('/logout', authenticateTokenMiddleware, logoutUser);
 /*
 router.get('/', authMiddleware, getUsers);
 router.get('/:id', authMiddleware, getUserById);
