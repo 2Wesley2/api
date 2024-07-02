@@ -1,41 +1,27 @@
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
 const { createPerson } = require('../personController');
-const Role = require('../../models/Role');
 const RolePermission = require('../../models/RolePermission');
 
 exports.registerAdmin = async (req, res) => {
-  try {
-    const { email, password, phone, cpf, firstName, lastName, birthDate } =
-      req.body;
+  const { email, password, phone, cpf, firstName, lastName, birthDate } =
+    req.body;
 
-    const role = await Role.findOne({ roleName: 'admin' }).lean();
-    if (!role) {
+  try {
+    const adminRolePermission = await RolePermission.findOne({
+      'role.roleName': 'admin',
+    }).lean();
+
+    if (!adminRolePermission) {
       return res.status(400).json({ msg: 'Role not found' });
     }
 
-    const rolePermission = await RolePermission.findOne({
-      role: role._id,
-    }).lean();
-    if (!rolePermission) {
-      return res
-        .status(400)
-        .json({ msg: 'RolePermission for admin not found' });
-    }
-
-    const personData = {
+    const personId = await createPerson({
       cpf,
       firstName,
       lastName,
       birthDate,
-    };
-
-    let person;
-    try {
-      person = await createPerson(personData);
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
+    });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -43,12 +29,12 @@ exports.registerAdmin = async (req, res) => {
       email,
       password: hashedPassword,
       phone,
-      person: person._id,
-      rolePermission: rolePermission._id,
+      person: personId,
+      rolePermission: adminRolePermission._id,
     });
-
     await newUser.save();
-    res.status(201).json(newUser);
+
+    res.status(201).json({ message: 'Usuário registrado com sucesso' });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao criar usuário', error });
   }

@@ -16,7 +16,7 @@ const {
   validateAndSanitizeMiddleware,
 } = require('../middlewares/validateAndSanitizeMiddleware');
 const loginLimiter = require('../middlewares/loginRateLimiter');
-const isAdminMiddleware = require('../middlewares/isAdminMiddleware');
+const checkAdminPermission = require('../middlewares/checkAdminPermission');
 
 router.post(
   '/register_retailer',
@@ -30,8 +30,11 @@ router.post('/login', loginLimiter, loginUser);
 router.post('/logout', authenticateTokenMiddleware, logoutUser);
 router.post(
   '/registerAdmin',
+  validateAndSanitizeMiddleware,
+  checkPersonExistenceMiddleware,
+  checkEmailPhoneUniquenessMiddleware,
   authenticateTokenMiddleware,
-  isAdminMiddleware,
+  checkAdminPermission,
   registerAdmin,
 );
 
