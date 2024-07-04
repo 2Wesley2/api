@@ -11,14 +11,18 @@ const checkPersonAndUserUniquenessMiddleware = async (req, res, next) => {
       }).lean(),
     ]);
 
-    if (person) {
-      return res.status(409).json({ message: 'CPF já cadastrado' });
-    }
+    const errors = [
+      person ? 'CPF já cadastrado' : null,
+      existingUser && existingUser.email === email
+        ? 'Email já cadastrado'
+        : null,
+      existingUser && existingUser.phone === phone
+        ? 'Telefone já cadastrado'
+        : null,
+    ].filter(Boolean);
 
-    if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: 'Email ou telefone já cadastrados.' });
+    if (errors.length > 0) {
+      return res.status(409).json({ messages: errors });
     }
 
     next();
