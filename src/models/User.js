@@ -7,14 +7,14 @@ const UserSchema = new mongoose.Schema(
     phone: { type: String, unique: true, sparse: true },
     person: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Person',
       unique: true,
       required: true,
+      ref: 'Person',
     },
     rolePermission: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'RolePermission',
       required: true,
+      ref: 'RolePermission',
     },
   },
   { timestamps: true },

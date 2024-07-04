@@ -17,7 +17,6 @@ const {
 } = require('../middlewares/validateAndSanitizeMiddleware');
 const loginLimiter = require('../middlewares/loginRateLimiter');
 const checkAdminPermission = require('../middlewares/checkAdminPermission');
-
 router.post(
   '/register_retailer',
   validateAndSanitizeMiddleware, // Primeiro valida e sanitiza os dados
@@ -29,8 +28,7 @@ router.post(
 router.post('/login', loginLimiter, loginUser);
 router.post('/logout', authenticateTokenMiddleware, logoutUser);
 router.post(
-  '/registerAdmin',
-  validateAndSanitizeMiddleware,
+  '/register_admin',
   checkPersonExistenceMiddleware,
   checkEmailPhoneUniquenessMiddleware,
   authenticateTokenMiddleware,
@@ -43,5 +41,7 @@ router.get('/', authMiddleware, getUsers);
 router.get('/:id', authMiddleware, getUserById);
 router.put('/:id', authMiddleware, validateAndSanitize, updateUser);
 router.delete('/:id', authMiddleware, deleteUser);
+
 */
+
 module.exports = router;
