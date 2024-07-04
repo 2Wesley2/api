@@ -12,14 +12,14 @@ const { logoutUser } = require('../controllers/userControllers/logout');
 const authenticateTokenMiddleware = require('../middlewares/authenticateTokenMiddleware');
 const checkPersonExistenceMiddleware = require('../middlewares/checkPersonExistenceMiddleware');
 const checkEmailPhoneUniquenessMiddleware = require('../middlewares/checkEmailPhoneUniquenessMiddleware');
-const {
+/*const {
   validateAndSanitizeMiddleware,
-} = require('../middlewares/validateAndSanitizeMiddleware');
+} = require('../middlewares/validateAndSanitizeMiddleware');*/
 const loginLimiter = require('../middlewares/loginRateLimiter');
 const checkAdminPermission = require('../middlewares/checkAdminPermission');
 router.post(
   '/register_retailer',
-  validateAndSanitizeMiddleware, // Primeiro valida e sanitiza os dados
+  //validateAndSanitizeMiddleware, // Primeiro valida e sanitiza os dados
   checkPersonExistenceMiddleware, // Verifica se a pessoa já existe no sistema
   checkEmailPhoneUniquenessMiddleware, // Verifica se email ou telefone já estão em uso
   registerRetailer, // Finalmente, chama o controlador para registrar o usuário

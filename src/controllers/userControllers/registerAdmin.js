@@ -9,7 +9,7 @@ exports.registerAdmin = async (req, res) => {
   try {
     const adminRolePermission = req.rolePermission;
     if (!adminRolePermission || !adminRolePermission.role) {
-      return res.status(400).json({ msg: 'Role not found' });
+      return res.status(400).json({ msg: 'Função não encontrada.' });
     }
     const personId = await createPerson({
       cpf,
@@ -26,8 +26,9 @@ exports.registerAdmin = async (req, res) => {
       rolePermission: adminRolePermission._id,
     });
     await newUser.save();
-    res.status(201).json({ message: 'Usuário registrado com sucesso' });
+    res.status(201).json({ message: 'Administrador registrado com sucesso' });
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao criar usuário', error });
+    console.error('Erro ao criar administrador:', error.message);
+    res.status(500).json({ message: 'Erro ao criar administrador', error });
   }
 };

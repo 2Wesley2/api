@@ -1,13 +1,18 @@
 const Person = require('../models/Person');
 
 exports.createPerson = async ({ cpf, firstName, lastName, birthDate }) => {
-  let person = await Person.findOne({ cpf: cpf }).lean();
-  if (person) {
-    throw new Error('CPF já cadastrado');
+  try {
+    let person = await Person.findOne({ cpf: cpf }).lean();
+    if (person) {
+      throw new Error('CPF já cadastrado');
+    }
+    person = new Person({ cpf, firstName, lastName, birthDate });
+    await person.save();
+    return person._id;
+  } catch (error) {
+    console.error('Erro ao criar pessoa:', error.message);
+    throw new Error('Erro ao criar pessoa');
   }
-  person = new Person({ cpf, firstName, lastName, birthDate });
-  await person.save();
-  return person._id;
 };
 
 exports.getPeople = async (req, res) => {

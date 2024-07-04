@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const authenticateTokenMiddleware = (req, res, next) => {
   if (!req.cookies || !req.cookies.token) {
     return res.status(401).json({
-      message: 'Acesso negado. Você precisa ser um usuário e estar autênticado',
+      message: 'Acesso negado. Usuário não autenticado.',
     });
   }
 
@@ -14,7 +14,11 @@ const authenticateTokenMiddleware = (req, res, next) => {
     req.id = decoded.id;
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Token inválido.', error: error.message });
+    console.error('Erro ao verificar token:', error.message);
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Token expirado.' });
+    }
+    res.status(401).json({ message: 'Token inválido.' });
   }
 };
 

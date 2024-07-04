@@ -28,10 +28,10 @@ const checkAdminPermission = async (req, res, next) => {
       })
       .lean();
 
-    const { rolePermission } = user;
     if (!user || !rolePermission.role || !user.rolePermission) {
       return res.status(403).json({ message: 'Permissões insuficientes' });
     }
+    const { rolePermission } = user;
 
     const isAdmin = user.rolePermission.role.roleName === 'admin';
     const hasPermission = user.rolePermission.permissions.some(
@@ -45,6 +45,7 @@ const checkAdminPermission = async (req, res, next) => {
       return res.status(403).send('Permissão negada');
     }
   } catch (error) {
+    console.error('Erro ao verificar papel do usuário:', error.message);
     res.status(500).json({
       message: 'Erro ao verificar papel do usuário',
       error: error.message,
