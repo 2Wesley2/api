@@ -8,6 +8,7 @@ export default [
     files: ['**/*.js'],
     languageOptions: {
       sourceType: 'commonjs',
+      globals: globals.node,
     },
   },
   {
@@ -22,9 +23,15 @@ export default [
       prettier: prettierPlugin,
     },
     rules: {
+      ...pluginJs.configs.recommended.rules,
+      ...prettierConfig.rules,
       'prettier/prettier': [
         'error',
         {
+          singleQuote: true,
+          trailingComma: 'all',
+          tabWidth: 2,
+          semi: true,
           endOfLine: 'lf',
         },
       ],
