@@ -50,7 +50,15 @@ const validateAndSanitizeMiddleware = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      const errorDetails = errors.array().map((err) => ({
+        msg: err.msg,
+        param: err.param,
+        location: err.location,
+      }));
+      return res.status(400).json({
+        messages: errorDetails.map((e) => e.msg),
+        errors: errorDetails,
+      });
     }
     next();
   },
