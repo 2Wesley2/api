@@ -11,10 +11,10 @@ const UserSchema = new mongoose.Schema(
       required: true,
       ref: 'Person',
     },
-    rolePermission: {
+    role: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'RolePermission',
+      ref: 'Role',
     },
   },
   { timestamps: true },

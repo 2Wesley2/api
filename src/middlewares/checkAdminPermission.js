@@ -1,53 +1,24 @@
-const User = require('../models/User');
-const Role = require('../models/Role');
-const RolePermission = require('../models/RolePermission');
-const Permission = require('../models/Permission');
+const validateUserPermissions = require('../utils/validateUserPermissions');
 
 const checkAdminPermission = async (req, res, next) => {
   const userId = req.id;
-  const requiredPermission = 'register_admin';
-
   try {
-    const user = await User.findById(userId)
-      .populate({
-        path: 'rolePermission',
-        model: RolePermission,
-        populate: [
-          {
-            path: 'role',
-            select: 'roleName',
-            model: Role,
-            match: { roleName: 'admin' },
-          },
-          {
-            path: 'permissions',
-            select: 'permissionName',
-            model: Permission,
-          },
-        ],
-      })
-      .lean();
-
-    if (!user || !rolePermission.role || !user.rolePermission) {
-      return res.status(403).json({ message: 'Permissões insuficientes' });
+    const errors = await validateUserPermissions(userId);
+    if (errors.length > 0) {
+      const highestStatus = errors.reduce(
+        (highest, error) => Math.max(highest, error.status),
+        400,
+      );
+      return res.status(highestStatus).json({
+        messages: errors.map((e) => e.msg),
+        errors: errors,
+      });
     }
-    const { rolePermission } = user;
-
-    const isAdmin = user.rolePermission.role.roleName === 'admin';
-    const hasPermission = user.rolePermission.permissions.some(
-      (permission) => permission.permissionName === requiredPermission,
-    );
-
-    if (isAdmin && hasPermission) {
-      req.rolePermission = rolePermission;
-      next();
-    } else {
-      return res.status(403).send('Permissão negada');
-    }
+    next();
   } catch (error) {
-    console.error('Erro ao verificar papel do usuário:', error.message);
+    console.error('Erro durante a validação das permissões:', error.message);
     res.status(500).json({
-      message: 'Erro ao verificar papel do usuário',
+      message: 'Erro ao verificar permissões',
       error: error.message,
     });
   }
