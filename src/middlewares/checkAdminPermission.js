@@ -2,8 +2,9 @@ const validateUserPermissions = require('../utils/validateUserPermissions');
 
 const checkAdminPermission = async (req, res, next) => {
   const userId = req.id;
+  const requiredPermission = 'register_admin';
   try {
-    const errors = await validateUserPermissions(userId);
+    const errors = await validateUserPermissions(userId, requiredPermission);
     if (errors.length > 0) {
       const highestStatus = errors.reduce(
         (highest, error) => Math.max(highest, error.status),

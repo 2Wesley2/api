@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const buildAggregationPipeline = require('../service/buildAggregationPipeline');
 
-const validateUserPermissions = async (userId) => {
+const validateUserPermissions = async (userId, requiredPermission) => {
   const errors = [];
   try {
     const aggregationPipeline = buildAggregationPipeline(userId);
@@ -11,7 +11,7 @@ const validateUserPermissions = async (userId) => {
     }
     const permissions = userWithPermissions[0].permissions;
     const hasAdminPermission = permissions.some(
-      (permission) => permission.permissionName === 'admin',
+      (permission) => permission.permissionName === requiredPermission,
     );
 
     if (!hasAdminPermission) {
