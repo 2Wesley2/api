@@ -20,8 +20,7 @@ const newUserRegistrationValidatorData = [
     .exists()
     .withMessage('Email é obrigatório')
     .isEmail()
-    .withMessage('Email inválido')
-    .normalizeEmail(),
+    .withMessage('Email inválido'),
   check('password')
     .exists()
     .withMessage('Senha é obrigatória')

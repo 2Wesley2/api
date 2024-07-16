@@ -1,11 +1,7 @@
 const { check, validationResult } = require('express-validator');
 
 const loginValidatorData = [
-  check('email')
-    .optional()
-    .isEmail()
-    .withMessage('Email inválido')
-    .normalizeEmail(),
+  check('email').optional().isEmail().withMessage('Email inválido'),
   check('phone')
     .optional()
     .isMobilePhone('pt-BR')
