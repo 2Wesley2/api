@@ -9,13 +9,14 @@ const {
 const { loginUser } = require('../controllers/userControllers/login');
 const { logoutUser } = require('../controllers/userControllers/logout');
 
-const authenticateTokenMiddleware = require('../middlewares/authenticateTokenMiddleware');
+const isAuthenticated = require('../middlewares/isAuthenticated');
+const isAuthorized = require('../middlewares/isAuthorized');
 const checkPersonAndUserUniquenessMiddleware = require('../middlewares/checkPersonAndUserUniquenessMiddleware');
 const {
   validateAndSanitizeMiddleware,
 } = require('../middlewares/validateAndSanitizeMiddleware');
 const loginLimiter = require('../middlewares/loginRateLimiter');
-const checkAdminPermission = require('../middlewares/checkAdminPermission');
+
 router.post(
   '/register_retailer',
   validateAndSanitizeMiddleware,
@@ -24,13 +25,13 @@ router.post(
 );
 
 router.post('/login', loginLimiter, loginUser);
-router.post('/logout', authenticateTokenMiddleware, logoutUser);
+router.post('/logout', logoutUser);
 router.post(
   '/register_admin',
-  authenticateTokenMiddleware,
-  checkAdminPermission,
-  validateAndSanitizeMiddleware,
+  isAuthenticated,
+  isAuthorized('register_admin'),
   checkPersonAndUserUniquenessMiddleware,
+  validateAndSanitizeMiddleware,
   registerAdmin,
 );
 
