@@ -12,26 +12,29 @@ const { logoutUser } = require('../controllers/userControllers/logout');
 const isAuthenticated = require('../middlewares/isAuthenticated');
 const isAuthorized = require('../middlewares/isAuthorized');
 const checkPersonAndUserUniquenessMiddleware = require('../middlewares/checkPersonAndUserUniquenessMiddleware');
+
 const {
-  validateAndSanitizeMiddleware,
-} = require('../middlewares/validateAndSanitizeMiddleware');
+  newUserRegistrationValidatorData,
+} = require('../middlewares/newUserRegistrationValidatorData.js');
+
+const { loginValidatorData } = require('../middlewares/loginValidatorData.js');
 const loginLimiter = require('../middlewares/loginRateLimiter');
 
 router.post(
   '/register_retailer',
-  validateAndSanitizeMiddleware,
+  newUserRegistrationValidatorData,
   checkPersonAndUserUniquenessMiddleware,
   registerRetailer,
 );
 
-router.post('/login', loginLimiter, loginUser);
+router.post('/login', loginLimiter, loginValidatorData, loginUser);
 router.post('/logout', logoutUser);
 router.post(
   '/register_admin',
   isAuthenticated,
   isAuthorized('register_admin'),
+  newUserRegistrationValidatorData,
   checkPersonAndUserUniquenessMiddleware,
-  validateAndSanitizeMiddleware,
   registerAdmin,
 );
 

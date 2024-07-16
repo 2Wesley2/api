@@ -1,7 +1,7 @@
 const { check, validationResult } = require('express-validator');
 const isValidCPF = require('../utils/cpfValidator');
 
-const validateAndSanitizeMiddleware = [
+const newUserRegistrationValidatorData = [
   check('cpf')
     .exists()
     .withMessage('CPF é obrigatório')
@@ -65,5 +65,5 @@ const validateAndSanitizeMiddleware = [
 ];
 
 module.exports = {
-  validateAndSanitizeMiddleware,
+  newUserRegistrationValidatorData,
 };
