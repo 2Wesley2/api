@@ -12,6 +12,16 @@ export default [
     },
   },
   {
+    files: ['**/*.test.js'],
+    languageOptions: {
+      sourceType: 'commonjs',
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+    },
+  },
+  {
     languageOptions: {
       globals: globals.node,
     },
