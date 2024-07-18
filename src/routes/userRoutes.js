@@ -11,15 +11,17 @@ const {
 const { loginUser } = require('../controllers/userControllers/login.js');
 const { logoutUser } = require('../controllers/userControllers/logout.js');
 
-const isAuthenticated = require('../middlewares/isAuthenticated.js');
-const isAuthorized = require('../middlewares/isAuthorized.js');
-const checkPersonAndUserUniquenessMiddleware = require('../middlewares/checkPersonAndUserUniquenessMiddleware.js');
+const isAuthenticated = require('../middlewares/auth/isAuthenticated.js');
+const isAuthorized = require('../middlewares/auth/isAuthorized.js');
+const checkPersonAndUserUniquenessMiddleware = require('../middlewares/validators/checkPersonAndUserUniquenessMiddleware.js');
 
 const {
   newUserRegistrationValidatorData,
-} = require('../middlewares/newUserRegistrationValidatorData.js');
+} = require('../middlewares/validators/newUserRegistrationValidatorData.js');
 
-const { loginValidatorData } = require('../middlewares/loginValidatorData.js');
+const {
+  loginValidatorData,
+} = require('../middlewares/validators/loginValidatorData.js');
 const loginLimiter = require('../middlewares/loginRateLimiter.js');
 
 router.post(

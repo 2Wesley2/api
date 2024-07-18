@@ -1,6 +1,6 @@
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
-const { createPerson } = require('../personController');
+const { registerPerson } = require('../personControllers/registerPerson');
 require('dotenv').config();
 
 exports.registerRetailer = async (req, res) => {
@@ -8,7 +8,7 @@ exports.registerRetailer = async (req, res) => {
     req.body;
 
   try {
-    const personId = await createPerson({
+    const personId = await registerPerson({
       cpf,
       firstName,
       lastName,

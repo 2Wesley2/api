@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator');
-const isValidCPF = require('../utils/cpfValidator');
+const isValidCPF = require('../../utils/cpfValidator');
 
 const newUserRegistrationValidatorData = [
   check('cpf')

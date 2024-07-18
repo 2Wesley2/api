@@ -1,5 +1,5 @@
-const User = require('../models/User');
-const checkRequestedPermission = require('../service/checkRequestedPermission');
+const User = require('../../models/User');
+const checkRequestedPermission = require('../../service/checkRequestedPermission');
 
 const isAuthorized = (requiredPermission) => {
   return async (req, res, next) => {

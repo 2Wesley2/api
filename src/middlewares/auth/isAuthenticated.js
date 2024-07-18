@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const util = require('util');
-const handleValidationErrors = require('../utils/handleValidationErrors');
+const handleValidationErrors = require('../../utils/handleValidationErrors');
 const verifyToken = util.promisify(jwt.verify);
 require('dotenv').config();
 
