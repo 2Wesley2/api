@@ -4,14 +4,6 @@ const { ObjectId } = mongoose.Types;
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 const checkRequestedPermission = (id, role, requiredPermission) => {
-  console.log(
-    '[checkRequestedPermission] Iniciando função com ID:',
-    id,
-    'Role:',
-    role,
-    'Permission:',
-    requiredPermission,
-  );
   if (!isValidObjectId(id) || !isValidObjectId(role)) {
     console.error('[checkRequestedPermission] id ou role ObjectId inválida');
     throw new Error('id ou role ObjectId inválida');
@@ -19,7 +11,7 @@ const checkRequestedPermission = (id, role, requiredPermission) => {
   const objectIdId = ObjectId.createFromHexString(id);
   const objectIdRole = ObjectId.createFromHexString(role);
 
-  const pipeline = [
+  return [
     {
       $match: {
         _id: objectIdId,
@@ -50,11 +42,6 @@ const checkRequestedPermission = (id, role, requiredPermission) => {
     },
     { $count: 'matchingDocuments' },
   ];
-  console.log(
-    '[checkRequestedPermission] Pipeline gerado:',
-    JSON.stringify(pipeline, null, 2),
-  );
-  return pipeline;
 };
 
 module.exports = checkRequestedPermission;

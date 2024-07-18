@@ -6,15 +6,18 @@ require('dotenv').config();
 exports.registerAdmin = async (req, res) => {
   const { email, password, phone, cpf, firstName, lastName, birthDate } =
     req.body;
-  const { role } = req.role;
-
+  const { role } = req;
+  const session = req.session;
   try {
-    const personId = await createPerson({
-      cpf,
-      firstName,
-      lastName,
-      birthDate,
-    });
+    const personId = await createPerson(
+      {
+        cpf,
+        firstName,
+        lastName,
+        birthDate,
+      },
+      session,
+    );
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -25,8 +28,7 @@ exports.registerAdmin = async (req, res) => {
       person: personId,
       role: role,
     });
-
-    await newUser.save();
+    await newUser.save({ session });
     res.status(201).json({ message: 'Administrador registrado com sucesso' });
   } catch (error) {
     console.error('Erro ao criar administrador:', error.message);

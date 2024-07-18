@@ -8,11 +8,7 @@ const isAuthenticated = async (req, res, next) => {
   const errors = [];
   const token = req.cookies.token;
 
-  console.log('[isAuthenticated] Iniciando middleware');
-  console.log('[isAuthenticated] Token recebido:', token);
-
   if (!token) {
-    console.log('[isAuthenticated] Nenhum token encontrado nos cookies');
     errors.push({
       status: 401,
       msg: 'Acesso negado. Usuário não autenticado.',
@@ -28,30 +24,14 @@ const isAuthenticated = async (req, res, next) => {
   }
 
   if (errors.length > 0) {
-    console.log(
-      '[isAuthenticated] Erros encontrados antes da verificação do token:',
-      errors,
-    );
     return handleValidationErrors(errors, res);
   }
 
   try {
-    console.log('[isAuthenticated] Verificando token...');
     const decoded = await verifyToken(token, process.env.JWT_SECRET);
-    console.log('[isAuthenticated] Token decodificado:', decoded);
     if (!decoded.role || !decoded.id) {
-      console.log(
-        '[isAuthenticated] Campos ausentes no token decodificado:',
-        decoded,
-      );
-      errors.push({
-        status: 401,
-        msg: 'Campos ausentes.',
-      });
+      errors.push({ status: 401, msg: 'Campos ausentes.' });
     } else {
-      console.log(
-        '[isAuthenticated] Token válido. Adicionando role e id à requisição',
-      );
       req.role = decoded.role;
       req.id = decoded.id;
 
@@ -65,10 +45,7 @@ const isAuthenticated = async (req, res, next) => {
       msg: 'Token inválido ou expirado.',
     });
   }
-  console.log(
-    '[isAuthenticated] Erros encontrados após a verificação do token:',
-    errors,
-  );
+
   handleValidationErrors(errors, res);
 };
 

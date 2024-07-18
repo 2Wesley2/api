@@ -1,24 +1,26 @@
 const express = require('express');
 const router = express.Router();
+const startTransactionMiddleware = require('../middlewares/transaction/startTransaction.js');
+const endTransactionMiddleware = require('../middlewares/transaction/endTransaction.js');
 const {
   registerRetailer,
-} = require('../controllers/userControllers/registerRetailer');
+} = require('../controllers/userControllers/registerRetailer.js');
 const {
   registerAdmin,
-} = require('../controllers/userControllers/registerAdmin');
-const { loginUser } = require('../controllers/userControllers/login');
-const { logoutUser } = require('../controllers/userControllers/logout');
+} = require('../controllers/userControllers/registerAdmin.js');
+const { loginUser } = require('../controllers/userControllers/login.js');
+const { logoutUser } = require('../controllers/userControllers/logout.js');
 
-const isAuthenticated = require('../middlewares/isAuthenticated');
-const isAuthorized = require('../middlewares/isAuthorized');
-const checkPersonAndUserUniquenessMiddleware = require('../middlewares/checkPersonAndUserUniquenessMiddleware');
+const isAuthenticated = require('../middlewares/isAuthenticated.js');
+const isAuthorized = require('../middlewares/isAuthorized.js');
+const checkPersonAndUserUniquenessMiddleware = require('../middlewares/checkPersonAndUserUniquenessMiddleware.js');
 
 const {
   newUserRegistrationValidatorData,
 } = require('../middlewares/newUserRegistrationValidatorData.js');
 
 const { loginValidatorData } = require('../middlewares/loginValidatorData.js');
-const loginLimiter = require('../middlewares/loginRateLimiter');
+const loginLimiter = require('../middlewares/loginRateLimiter.js');
 
 router.post(
   '/register_retailer',
@@ -35,7 +37,9 @@ router.post(
   isAuthorized('register_admin'),
   newUserRegistrationValidatorData,
   checkPersonAndUserUniquenessMiddleware,
+  startTransactionMiddleware,
   registerAdmin,
+  endTransactionMiddleware,
 );
 
 /*
