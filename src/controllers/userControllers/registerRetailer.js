@@ -6,14 +6,18 @@ require('dotenv').config();
 exports.registerRetailer = async (req, res) => {
   const { email, password, phone, cpf, firstName, lastName, birthDate } =
     req.body;
+  const session = req.session;
 
   try {
-    const personId = await registerPerson({
-      cpf,
-      firstName,
-      lastName,
-      birthDate,
-    });
+    const person = await registerPerson(
+      {
+        cpf,
+        firstName,
+        lastName,
+        birthDate,
+      },
+      session,
+    );
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const retailerRoleId = process.env.ROLE_RETAILER_ID;
@@ -22,11 +26,11 @@ exports.registerRetailer = async (req, res) => {
       email,
       password: hashedPassword,
       phone,
-      person: personId,
+      person: person._id,
       role: retailerRoleId,
     });
 
-    await newUser.save();
+    await newUser.save({ session });
     res.status(201).json({ message: 'Usuário registrado com sucesso' });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao criar usuário', error });

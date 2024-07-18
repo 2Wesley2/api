@@ -9,7 +9,7 @@ exports.registerAdmin = async (req, res) => {
   const { role } = req;
   const session = req.session;
   try {
-    const personId = await registerPerson(
+    const person = await registerPerson(
       {
         cpf,
         firstName,
@@ -25,7 +25,7 @@ exports.registerAdmin = async (req, res) => {
       email,
       password: hashedPassword,
       phone,
-      person: personId,
+      person: person._id,
       role: role,
     });
     await newUser.save({ session });

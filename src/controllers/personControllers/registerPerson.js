@@ -11,7 +11,7 @@ exports.registerPerson = async (
     }
     person = new Person({ cpf, firstName, lastName, birthDate });
     await person.save({ session });
-    return person._id;
+    return person;
   } catch (error) {
     console.error('Erro ao criar pessoa:', error.message);
     throw new Error('Erro ao criar pessoa');
