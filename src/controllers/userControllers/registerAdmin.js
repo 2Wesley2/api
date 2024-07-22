@@ -1,6 +1,10 @@
 const User = require('../../models/User.js');
 const bcrypt = require('bcryptjs');
 const { registerPerson } = require('../personControllers/registerPerson.js');
+const {
+  registerUserPermissions,
+} = require('../permissionControllers/registerUserPermissions.js');
+
 require('dotenv').config();
 const generateHttpError = require('../../utils/generateHttpError');
 
@@ -29,6 +33,8 @@ exports.registerAdmin = async (req, res, next) => {
       person: person._id,
       role: role,
     });
+
+    await registerUserPermissions(newUser._id, role, session);
     await newUser.save({ session });
     res.status(201).json({ message: 'Administrador registrado com sucesso' });
   } catch (error) {

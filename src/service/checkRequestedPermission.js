@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
-const generateHttpError = require('../../utils/generateHttpError');
+const generateHttpError = require('../utils/generateHttpErrorr');
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
-const checkRequestedPermission = (id, role, requiredPermission) => {
+const checkRequestedPermission = async (id, role, requiredPermission) => {
   if (!isValidObjectId(id) || !isValidObjectId(role)) {
     console.error('[checkRequestedPermission] id ou role ObjectId inválida');
     throw generateHttpError(400, 'id ou role ObjectId inválida');
@@ -12,7 +12,7 @@ const checkRequestedPermission = (id, role, requiredPermission) => {
   const objectIdId = ObjectId.createFromHexString(id);
   const objectIdRole = ObjectId.createFromHexString(role);
 
-  return [
+  const pipeline = [
     {
       $match: {
         _id: objectIdId,
@@ -21,28 +21,47 @@ const checkRequestedPermission = (id, role, requiredPermission) => {
     },
     {
       $lookup: {
-        from: 'rolepermissions',
-        localField: 'role',
-        foreignField: 'role',
-        as: 'rolePermissions',
-      },
-    },
-    { $unwind: '$rolePermissions' },
-    {
-      $lookup: {
-        from: 'permissions',
-        localField: 'rolePermissions.permissions',
-        foreignField: '_id',
+        from: 'userpermissions',
+        localField: '_id',
+        foreignField: 'userId',
         as: 'permissions',
       },
     },
+    { $unwind: '$permissions' },
     {
       $match: {
-        'permissions.permissionName': requiredPermission,
+        'permissions.permissions': requiredPermission,
       },
     },
-    { $count: 'matchingDocuments' },
+    {
+      $project: {
+        _id: 1,
+      },
+    },
   ];
-};
 
+  try {
+    const result = await mongoose.connection.db
+      .collection('users')
+      .aggregate(pipeline)
+      .toArray();
+
+    if (result.length > 1) {
+      console.error(
+        '[checkRequestedPermission] Dados inconsistentes: múltiplos documentos encontrados',
+      );
+      throw generateHttpError(
+        500,
+        'Dados inconsistentes: múltiplos documentos encontrados',
+      );
+    }
+    return result.length === 1;
+  } catch (error) {
+    console.error(
+      '[checkRequestedPermission] Erro ao verificar permissões:',
+      error,
+    );
+    throw generateHttpError(500, 'Erro ao verificar permissões');
+  }
+};
 module.exports = checkRequestedPermission;
