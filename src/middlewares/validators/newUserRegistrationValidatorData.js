@@ -1,5 +1,6 @@
 const { check, validationResult } = require('express-validator');
 const isValidCPF = require('../../utils/cpfValidator');
+const generateHttpError = require('../../utils/generateHttpError');
 
 const newUserRegistrationValidatorData = [
   check('cpf')
@@ -54,10 +55,7 @@ const newUserRegistrationValidatorData = [
         param: err.param,
         location: err.location,
       }));
-      return res.status(400).json({
-        messages: errorDetails.map((e) => e.msg),
-        errors: errorDetails,
-      });
+      next(generateHttpError(400, 'Erro de validação', errorDetails));
     }
     next();
   },

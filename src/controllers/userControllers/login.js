@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const validateLoginCredentials = require('../../utils/validateLoginCredentials');
-const handleValidationErrors = require('../../utils/handleValidationErrors');
 require('dotenv').config();
+const generateHttpError = require('../../utils/generateHttpError');
 
 const COOKIE_OPTIONS = Object.freeze({
   httpOnly: true,
@@ -11,17 +11,10 @@ const COOKIE_OPTIONS = Object.freeze({
 
 const TOKEN_EXPIRATION = process.env.TOKEN_EXPIRATION;
 
-exports.loginUser = async (req, res) => {
+exports.loginUser = async (req, res, next) => {
   try {
     const { email, password, phone } = req.body;
-    const { errors, user } = await validateLoginCredentials(
-      email,
-      phone,
-      password,
-    );
-    if (errors.length > 0) {
-      return handleValidationErrors(errors, res);
-    }
+    const user = await validateLoginCredentials(email, phone, password);
 
     const payload = user;
 
@@ -32,8 +25,6 @@ exports.loginUser = async (req, res) => {
     return res.status(200).json({ message: 'Logado com sucesso' });
   } catch (error) {
     console.error('[loginUser] Erro durante o login:', error);
-    res
-      .status(500)
-      .json({ message: 'Erro ao fazer login', error: error.message });
+    next(generateHttpError(500, 'Erro durante o login', error));
   }
 };

@@ -2,8 +2,9 @@ const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
 const { registerPerson } = require('../personControllers/registerPerson');
 require('dotenv').config();
+const generateHttpError = require('../../utils/generateHttpError');
 
-exports.registerRetailer = async (req, res) => {
+exports.registerRetailer = async (req, res, next) => {
   const { email, password, phone, cpf, firstName, lastName, birthDate } =
     req.body;
   const session = req.session;
@@ -33,6 +34,6 @@ exports.registerRetailer = async (req, res) => {
     await newUser.save({ session });
     res.status(201).json({ message: 'Usuário registrado com sucesso' });
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao criar usuário', error });
+    next(generateHttpError(500, 'Erro ao criar usuário', error));
   }
 };

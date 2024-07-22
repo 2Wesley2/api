@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const generateHttpError = require('../../utils/generateHttpError');
 
 const startTransactionMiddleware = async (req, res, next) => {
   try {
@@ -7,7 +8,7 @@ const startTransactionMiddleware = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Erro ao iniciar transação:', error.message);
-    res.status(500).json({ message: 'Erro ao iniciar transação', error });
+    next(generateHttpError(500, 'Erro ao iniciar transação', error));
   }
 };
 

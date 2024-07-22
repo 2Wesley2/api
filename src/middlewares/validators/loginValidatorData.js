@@ -1,4 +1,5 @@
 const { check, validationResult } = require('express-validator');
+const generateHttpError = require('../../utils/generateHttpError');
 
 const loginValidatorData = [
   check('email').optional().isEmail().withMessage('Email inválido'),
@@ -27,10 +28,7 @@ const loginValidatorData = [
         param: err.param,
         location: err.location,
       }));
-      return res.status(400).json({
-        messages: errorDetails.map((e) => e.msg),
-        errors: errorDetails,
-      });
+      next(generateHttpError(400, 'Erro de validação', errorDetails));
     }
     next();
   },

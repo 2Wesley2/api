@@ -2,8 +2,9 @@ const User = require('../../models/User.js');
 const bcrypt = require('bcryptjs');
 const { registerPerson } = require('../personControllers/registerPerson.js');
 require('dotenv').config();
+const generateHttpError = require('../../utils/generateHttpError');
 
-exports.registerAdmin = async (req, res) => {
+exports.registerAdmin = async (req, res, next) => {
   const { email, password, phone, cpf, firstName, lastName, birthDate } =
     req.body;
   const { role } = req;
@@ -31,7 +32,6 @@ exports.registerAdmin = async (req, res) => {
     await newUser.save({ session });
     res.status(201).json({ message: 'Administrador registrado com sucesso' });
   } catch (error) {
-    console.error('Erro ao criar administrador:', error.message);
-    res.status(500).json({ message: 'Erro ao criar administrador', error });
+    next(generateHttpError(500, 'Erro ao criar administrador', error));
   }
 };

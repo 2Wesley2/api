@@ -1,5 +1,6 @@
-const Person = require('../models/Person');
-const User = require('../models/User');
+const Person = require('../../models/Person');
+const User = require('../../models/User');
+const generateHttpError = require('../../utils/generateHttpError');
 
 const checkPersonAndUserUniquenessMiddleware = async (req, res, next) => {
   try {
@@ -22,15 +23,12 @@ const checkPersonAndUserUniquenessMiddleware = async (req, res, next) => {
     ].filter(Boolean);
 
     if (errors.length > 0) {
-      return res.status(409).json({ messages: errors });
+      return next(generateHttpError(409, errors.join(', ')));
     }
 
     next();
   } catch (error) {
-    res.status(500).json({
-      message: 'Erro ao verificar dados do usuário',
-      error: error.message,
-    });
+    next(generateHttpError(500, 'Erro ao verificar dados do usuário', error));
   }
 };
 

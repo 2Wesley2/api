@@ -6,7 +6,7 @@ const router = express.Router();
 const startTransactionMiddleware = require('../middlewares/transaction/startTransaction.js');
 const endTransactionMiddleware = require('../middlewares/transaction/endTransaction.js');
 
-// Import user controllers
+// Import controllers
 const {
   registerRetailer,
 } = require('../controllers/userControllers/registerRetailer.js');
@@ -15,6 +15,9 @@ const {
 } = require('../controllers/userControllers/registerAdmin.js');
 const { loginUser } = require('../controllers/userControllers/login.js');
 const { logoutUser } = require('../controllers/userControllers/logout.js');
+const {
+  createProfile,
+} = require('../controllers/profileControllers/createProfile.js');
 
 // Import authentication and authorization middleware
 const isAuthenticated = require('../middlewares/auth/isAuthenticated.js');
@@ -29,16 +32,8 @@ const {
 const {
   loginValidatorData,
 } = require('../middlewares/validators/loginValidatorData.js');
+const checkUserHasProfileMiddleware = require('../middlewares/validators/checkUserHasProfileMiddleware.js');
 
-/**
- * Rota para registro de varejista.
- * @name post/register_retailer
- * @function
- * @memberof module:routers/userRouter
- * @inner
- * @param {string} path - URL da rota
- * @param {...Function} middleware - Middlewares a serem executados
- */
 //routes
 router.post(
   '/register_retailer',
@@ -60,6 +55,16 @@ router.post(
   checkPersonAndUserUniquenessMiddleware,
   startTransactionMiddleware,
   registerAdmin,
+  endTransactionMiddleware,
+);
+
+router.post(
+  '/create_profile',
+  isAuthenticated,
+  isAuthorized('create_profile'),
+  checkUserHasProfileMiddleware,
+  startTransactionMiddleware,
+  createProfile,
   endTransactionMiddleware,
 );
 

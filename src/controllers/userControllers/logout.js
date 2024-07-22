@@ -1,4 +1,6 @@
-exports.logoutUser = (req, res) => {
+const generateHttpError = require('../../utils/generateHttpError');
+
+exports.logoutUser = (req, res, next) => {
   try {
     res.clearCookie('token', {
       httpOnly: true,
@@ -8,8 +10,6 @@ exports.logoutUser = (req, res) => {
     return res.status(200).json({ message: 'Logout realizado com sucesso' });
   } catch (error) {
     console.error('Erro durante o logout:', error);
-    res
-      .status(500)
-      .json({ message: 'Erro ao realizar logout', error: error.message });
+    next(generateHttpError(500, 'Erro ao realizar logout', error));
   }
 };

@@ -1,52 +1,35 @@
 const jwt = require('jsonwebtoken');
 const util = require('util');
-const handleValidationErrors = require('../../utils/handleValidationErrors');
 const verifyToken = util.promisify(jwt.verify);
 require('dotenv').config();
-
+const generateHttpError = require('../../utils/generateHttpError');
 const isAuthenticated = async (req, res, next) => {
-  const errors = [];
   const token = req.cookies.token;
 
   if (!token) {
-    errors.push({
-      status: 401,
-      msg: 'Acesso negado. Usuário não autenticado.',
-    });
+    return next(
+      generateHttpError(401, 'Acesso negado. Usuário não autenticado.'),
+    );
   }
 
   if (!process.env.JWT_SECRET) {
     console.error('[isAuthenticated] JWT_SECRET não está definido.');
-    errors.push({
-      status: 500,
-      msg: 'Erro interno do servidor.',
-    });
-  }
-
-  if (errors.length > 0) {
-    return handleValidationErrors(errors, res);
+    return next(generateHttpError(500, 'Erro interno do servidor.'));
   }
 
   try {
     const decoded = await verifyToken(token, process.env.JWT_SECRET);
     if (!decoded.role || !decoded.id) {
-      errors.push({ status: 401, msg: 'Campos ausentes.' });
+      return next(generateHttpError(401, 'Campos ausentes.'));
     } else {
       req.role = decoded.role;
       req.id = decoded.id;
 
       next();
-      return; //não deve ser removido para evitar a chamada da linha 52 quando o middleware for passado pra frente
     }
   } catch (error) {
-    console.error('[isAuthenticated] Erro ao verificar token:', error.message);
-    errors.push({
-      status: 401,
-      msg: 'Token inválido ou expirado.',
-    });
+    next(generateHttpError(401, 'Token inválido ou expirado.', error));
   }
-
-  handleValidationErrors(errors, res);
 };
 
 module.exports = isAuthenticated;

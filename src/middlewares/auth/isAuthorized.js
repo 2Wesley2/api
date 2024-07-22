@@ -1,5 +1,6 @@
 const User = require('../../models/User');
 const checkRequestedPermission = require('../../service/checkRequestedPermission');
+const generateHttpError = require('../../utils/generateHttpError');
 
 const isAuthorized = (requiredPermission) => {
   return async (req, res, next) => {
@@ -20,7 +21,7 @@ const isAuthorized = (requiredPermission) => {
 
       next();
     } catch (error) {
-      res.status(500).json({ message: 'Erro interno do servidor', error });
+      next(generateHttpError(500, 'Erro interno do servidor', error));
     }
   };
 };

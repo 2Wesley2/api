@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
+const generateHttpError = require('../../utils/generateHttpError');
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 const checkRequestedPermission = (id, role, requiredPermission) => {
   if (!isValidObjectId(id) || !isValidObjectId(role)) {
     console.error('[checkRequestedPermission] id ou role ObjectId inválida');
-    throw new Error('id ou role ObjectId inválida');
+    throw generateHttpError(400, 'id ou role ObjectId inválida');
   }
   const objectIdId = ObjectId.createFromHexString(id);
   const objectIdRole = ObjectId.createFromHexString(role);
