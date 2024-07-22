@@ -5,6 +5,7 @@ const generateHttpError = require('../../utils/generateHttpError');
 exports.registerUserPermissions = async (userId, role, session) => {
   try {
     const rolePermissions = await RolePermission.findOne({ role })
+      .session(session)
       .lean()
       .select('permissions');
     if (!rolePermissions) {
@@ -19,7 +20,7 @@ exports.registerUserPermissions = async (userId, role, session) => {
       userId: userId,
       permissions: permissions,
     });
-    await newUserPermission.save({ session });
+    return newUserPermission;
   } catch (error) {
     console.error('Erro ao criar permissões do usuário:', error.message);
     throw generateHttpError(500, 'Erro ao criar permissões do usuário', error);

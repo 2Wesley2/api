@@ -15,9 +15,7 @@ const {
 } = require('../controllers/userControllers/registerAdmin.js');
 const { loginUser } = require('../controllers/userControllers/login.js');
 const { logoutUser } = require('../controllers/userControllers/logout.js');
-const {
-  createProfile,
-} = require('../controllers/profileControllers/createProfile.js');
+const { createProfile } = require('../service/profile/createProfile.js');
 
 // Import authentication and authorization middleware
 const isAuthenticated = require('../middlewares/auth/isAuthenticated.js');

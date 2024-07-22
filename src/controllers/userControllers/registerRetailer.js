@@ -1,9 +1,9 @@
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
-const { registerPerson } = require('../personControllers/registerPerson');
+const { registerPerson } = require('../../service/person/registerPerson');
 const {
   registerUserPermissions,
-} = require('../permissionControllers/registerUserPermissions');
+} = require('../../service/permission/registerUserPermissions');
 
 require('dotenv').config();
 const generateHttpError = require('../../utils/generateHttpError');
@@ -35,9 +35,18 @@ exports.registerRetailer = async (req, res, next) => {
       role: retailerRoleId,
     });
 
-    await newUser.save({ session });
+    const newUserPermission = await registerUserPermissions(
+      newUser._id,
+      retailerRoleId,
+      session,
+    );
 
-    await registerUserPermissions(newUser._id, retailerRoleId, session);
+    await Promise.all([
+      person.save({ session }),
+      newUser.save({ session }),
+      newUserPermission.save({ session }),
+    ]);
+
     res.status(201).json({ message: 'Usuário registrado com sucesso' });
   } catch (error) {
     next(generateHttpError(500, 'Erro ao criar usuário', error));

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
-const generateHttpError = require('../utils/generateHttpError');
+const generateHttpError = require('../../utils/generateHttpError');
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 

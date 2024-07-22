@@ -11,7 +11,6 @@ exports.registerPerson = async (
       throw generateHttpError(400, 'CPF já cadastrado');
     }
     person = new Person({ cpf, firstName, lastName, birthDate });
-    await person.save({ session });
     return person;
   } catch (error) {
     console.error('Erro ao criar pessoa:', error.message);

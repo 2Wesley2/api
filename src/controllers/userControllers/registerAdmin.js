@@ -1,9 +1,9 @@
 const User = require('../../models/User.js');
 const bcrypt = require('bcryptjs');
-const { registerPerson } = require('../personControllers/registerPerson.js');
+const { registerPerson } = require('../../service/person/registerPerson.js');
 const {
   registerUserPermissions,
-} = require('../permissionControllers/registerUserPermissions.js');
+} = require('../../service/permission/registerUserPermissions.js');
 
 require('dotenv').config();
 const generateHttpError = require('../../utils/generateHttpError');
@@ -34,8 +34,17 @@ exports.registerAdmin = async (req, res, next) => {
       role: role,
     });
 
-    await registerUserPermissions(newUser._id, role, session);
-    await newUser.save({ session });
+    const newUserPermission = await registerUserPermissions(
+      newUser._id,
+      role,
+      session,
+    );
+
+    await Promise.all([
+      person.save({ session }),
+      newUser.save({ session }),
+      newUserPermission.save({ session }),
+    ]);
     res.status(201).json({ message: 'Administrador registrado com sucesso' });
   } catch (error) {
     next(generateHttpError(500, 'Erro ao criar administrador', error));

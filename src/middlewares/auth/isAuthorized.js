@@ -1,4 +1,4 @@
-const checkRequestedPermission = require('../../service/checkRequestedPermission');
+const checkRequestedPermission = require('../../service/authorization/checkRequestedPermission');
 const generateHttpError = require('../../utils/generateHttpError');
 
 const isAuthorized = (requiredPermission) => {
