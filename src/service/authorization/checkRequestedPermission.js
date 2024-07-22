@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
 const generateHttpError = require('../../utils/generateHttpError');
+const validateParams = require('../../utils/validateParams');
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 const checkRequestedPermission = async (id, role, requiredPermission) => {
+  validateParams({ id, role, requiredPermission });
+
   if (!isValidObjectId(id) || !isValidObjectId(role)) {
     console.error('[checkRequestedPermission] id ou role ObjectId inválida');
     throw generateHttpError(400, 'id ou role ObjectId inválida');

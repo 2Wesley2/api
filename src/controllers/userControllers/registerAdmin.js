@@ -6,6 +6,7 @@ const {
 } = require('../../service/permission/registerUserPermissions.js');
 
 require('dotenv').config();
+const validateParams = require('../../utils/validateParams');
 const generateHttpError = require('../../utils/generateHttpError');
 
 exports.registerAdmin = async (req, res, next) => {
@@ -13,6 +14,18 @@ exports.registerAdmin = async (req, res, next) => {
     req.body;
   const { role } = req;
   const session = req.session;
+
+  validateParams({
+    email,
+    password,
+    phone,
+    cpf,
+    firstName,
+    lastName,
+    birthDate,
+    role,
+  });
+
   try {
     const person = await registerPerson(
       {

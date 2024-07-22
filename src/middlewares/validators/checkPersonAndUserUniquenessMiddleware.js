@@ -1,10 +1,12 @@
 const Person = require('../../models/Person');
 const User = require('../../models/User');
 const generateHttpError = require('../../utils/generateHttpError');
+const validateParams = require('../../utils/validateParams');
 
 const checkPersonAndUserUniquenessMiddleware = async (req, res, next) => {
   try {
     const { cpf, email, phone } = req.body;
+    validateParams({ cpf, email, phone });
     const [person, existingUser] = await Promise.all([
       Person.findOne({ cpf }).lean(),
       User.findOne({

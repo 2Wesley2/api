@@ -1,13 +1,16 @@
 const UserPermission = require('../../models/UserPermission');
 const RolePermission = require('../../models/RolePermission');
 const generateHttpError = require('../../utils/generateHttpError');
+const validateParams = require('../../utils/validateParams');
 
 exports.registerUserPermissions = async (userId, role, session) => {
+  validateParams({ userId, role });
   try {
     const rolePermissions = await RolePermission.findOne({ role })
       .session(session)
       .lean()
       .select('permissions');
+
     if (!rolePermissions) {
       throw generateHttpError(400, 'Permissões do role não encontradas');
     }

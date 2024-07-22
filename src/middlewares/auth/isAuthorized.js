@@ -1,15 +1,12 @@
 const checkRequestedPermission = require('../../service/authorization/checkRequestedPermission');
 const generateHttpError = require('../../utils/generateHttpError');
+const validateParams = require('../../utils/validateParams');
 
 const isAuthorized = (requiredPermission) => {
   return async (req, res, next) => {
     try {
       const { id, role } = req;
-
-      if (!id || !role) {
-        return next(generateHttpError(400, 'ID ou Role não fornecido'));
-      }
-
+      validateParams({ id, role });
       const hasPermission = await checkRequestedPermission(
         id,
         role,

@@ -1,8 +1,11 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const generateHttpError = require('../utils/generateHttpError');
+const validateParams = require('../utils/validateParams');
 
 const validateLoginCredentials = async (email, phone, password) => {
+  validateParams({ password });
+
   if (!email && !phone) {
     throw generateHttpError(400, 'Por favor, forneça um email ou um telefone.');
   }
