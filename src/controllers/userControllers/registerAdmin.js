@@ -1,4 +1,5 @@
 const User = require('../../models/User.js');
+const Profile = require('../../models/Profile.js');
 const bcrypt = require('bcryptjs');
 const { registerPerson } = require('../../service/person/registerPerson.js');
 const {
@@ -36,6 +37,7 @@ exports.registerAdmin = async (req, res, next) => {
       },
       session,
     );
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       email,
@@ -44,16 +46,25 @@ exports.registerAdmin = async (req, res, next) => {
       person: person._id,
       role: role,
     });
+
     const newUserPermission = await registerUserPermissions(
       newUser._id,
       role,
       session,
     );
+
+    const newProfile = new Profile({
+      user: newUser._id,
+      stores: [],
+    });
+
     await Promise.all([
       person.save({ session }),
       newUser.save({ session }),
       newUserPermission.save({ session }),
+      newProfile.save({ session }),
     ]);
+
     res.status(201).json({ message: 'Administrador registrado com sucesso' });
     next();
   } catch (error) {

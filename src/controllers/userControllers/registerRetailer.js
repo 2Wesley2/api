@@ -1,4 +1,6 @@
 const User = require('../../models/User');
+const Profile = require('../../models/Profile');
+const Store = require('../../models/Store');
 const bcrypt = require('bcryptjs');
 const { registerPerson } = require('../../service/person/registerPerson');
 const {
@@ -10,8 +12,18 @@ require('dotenv').config();
 const generateHttpError = require('../../utils/generateHttpError');
 
 exports.registerRetailer = async (req, res, next) => {
-  const { email, password, phone, cpf, firstName, lastName, birthDate } =
-    req.body;
+  const {
+    email,
+    password,
+    phone,
+    cpf,
+    firstName,
+    lastName,
+    birthDate,
+    storeName,
+    storeAddress,
+    storeContact,
+  } = req.body;
   const session = req.session;
 
   validateParams({
@@ -22,6 +34,9 @@ exports.registerRetailer = async (req, res, next) => {
     firstName,
     lastName,
     birthDate,
+    storeName,
+    storeAddress,
+    storeContact,
   });
 
   try {
@@ -52,10 +67,26 @@ exports.registerRetailer = async (req, res, next) => {
       session,
     );
 
+    const newProfile = new Profile({
+      user: newUser._id,
+      stores: [],
+    });
+
+    const newStore = new Store({
+      storeName,
+      storeAddress,
+      storeContact,
+      profile: newProfile._id,
+    });
+
+    newProfile.stores.push(newStore._id);
+
     await Promise.all([
       person.save({ session }),
       newUser.save({ session }),
       newUserPermission.save({ session }),
+      newProfile.save({ session }),
+      newStore.save({ session }),
     ]);
 
     res.status(201).json({ message: 'Usuário registrado com sucesso' });

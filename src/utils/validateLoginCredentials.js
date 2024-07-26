@@ -13,7 +13,12 @@ const validateLoginCredentials = async (email, phone, password) => {
   try {
     const query = email ? { email } : { phone };
 
-    const findUser = await User.findOne(query);
+    const findUser = await User.findOne(query).populate({
+      path: 'profile',
+      populate: {
+        path: 'stores',
+      },
+    });
 
     if (!findUser) {
       throw generateHttpError(404, 'Credenciais inválidas');
@@ -31,6 +36,17 @@ const validateLoginCredentials = async (email, phone, password) => {
       phone: findUser.phone || null,
       person: findUser.person.toString(),
       role: findUser.role.toString(),
+      profile: findUser.profile
+        ? {
+            id: findUser.profile._id.toString(),
+            stores: findUser.profile.stores.map((store) => ({
+              id: store._id.toString(),
+              storeName: store.storeName,
+              storeAddress: store.storeAddress,
+              storeContact: store.storeContact,
+            })),
+          }
+        : null,
     };
   } catch (error) {
     console.error(

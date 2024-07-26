@@ -15,7 +15,6 @@ const {
 } = require('../controllers/userControllers/registerAdmin.js');
 const { loginUser } = require('../controllers/userControllers/login.js');
 const { logoutUser } = require('../controllers/userControllers/logout.js');
-const { registerProfile } = require('../service/profile/registerProfile.js');
 
 // Import authentication and authorization middleware
 const isAuthenticated = require('../middlewares/auth/isAuthenticated.js');
@@ -30,11 +29,11 @@ const {
 const {
   loginValidatorData,
 } = require('../middlewares/validators/loginValidatorData.js');
-const checkUserHasProfileMiddleware = require('../middlewares/validators/checkUserHasProfileMiddleware.js');
 
 //routes
 router.post(
   '/register_retailer',
+  isAuthenticated(false),
   newUserRegistrationValidatorData,
   checkPersonAndUserUniquenessMiddleware,
   startTransactionMiddleware,
@@ -42,27 +41,23 @@ router.post(
   endTransactionMiddleware,
 );
 
-router.post('/login', loginLimiter, loginValidatorData, loginUser);
+router.post(
+  '/login',
+  loginLimiter,
+  isAuthenticated(false),
+  loginValidatorData,
+  loginUser,
+);
 
 router.post('/logout', logoutUser);
 router.post(
   '/register_admin',
-  isAuthenticated,
+  isAuthenticated(true),
   isAuthorized('register_admin'),
   newUserRegistrationValidatorData,
   checkPersonAndUserUniquenessMiddleware,
   startTransactionMiddleware,
   registerAdmin,
-  endTransactionMiddleware,
-);
-
-router.post(
-  '/create_profile',
-  isAuthenticated,
-  isAuthorized('create_profile'),
-  checkUserHasProfileMiddleware,
-  startTransactionMiddleware,
-  registerProfile,
   endTransactionMiddleware,
 );
 
