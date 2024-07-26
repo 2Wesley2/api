@@ -15,7 +15,6 @@ const TOKEN_EXPIRATION = process.env.TOKEN_EXPIRATION;
 exports.loginUser = async (req, res, next) => {
   try {
     const { email, password, phone } = req.body;
-
     validateParams({ password });
 
     if (!email && !phone) {
@@ -23,6 +22,7 @@ exports.loginUser = async (req, res, next) => {
         generateHttpError(400, 'Por favor, forneça um email ou um telefone.'),
       );
     }
+
     const user = await validateLoginCredentials(email, phone, password);
 
     const payload = user;

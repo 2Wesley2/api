@@ -12,6 +12,7 @@ const validateLoginCredentials = async (email, phone, password) => {
 
   try {
     const query = email ? { email } : { phone };
+
     const findUser = await User.findOne(query);
 
     if (!findUser) {

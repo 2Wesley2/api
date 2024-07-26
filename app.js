@@ -2,11 +2,7 @@ const express = require('express');
 const connectDB = require('./src/config/db');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
-
 const userRoutes = require('./src/routes/userRoutes');
-const personRoutes = require('./src/routes/personRoutes');
-const profileRoutes = require('./src/routes/profileRoutes');
-const storeRoutes = require('./src/routes/storeRoutes');
 const errorHandler = require('./src/middlewares/error/handleErrors');
 dotenv.config();
 
@@ -18,9 +14,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use('/users', userRoutes);
-app.use('/people', personRoutes);
-app.use('/profiles', profileRoutes);
-app.use('/stores', storeRoutes);
+
 app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 

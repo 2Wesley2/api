@@ -15,7 +15,7 @@ const {
 } = require('../controllers/userControllers/registerAdmin.js');
 const { loginUser } = require('../controllers/userControllers/login.js');
 const { logoutUser } = require('../controllers/userControllers/logout.js');
-const { createProfile } = require('../service/profile/createProfile.js');
+const { registerProfile } = require('../service/profile/registerProfile.js');
 
 // Import authentication and authorization middleware
 const isAuthenticated = require('../middlewares/auth/isAuthenticated.js');
@@ -62,7 +62,7 @@ router.post(
   isAuthorized('create_profile'),
   checkUserHasProfileMiddleware,
   startTransactionMiddleware,
-  createProfile,
+  registerProfile,
   endTransactionMiddleware,
 );
 

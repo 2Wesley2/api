@@ -36,9 +36,7 @@ exports.registerAdmin = async (req, res, next) => {
       },
       session,
     );
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const newUser = new User({
       email,
       password: hashedPassword,
@@ -46,20 +44,21 @@ exports.registerAdmin = async (req, res, next) => {
       person: person._id,
       role: role,
     });
-
     const newUserPermission = await registerUserPermissions(
       newUser._id,
       role,
       session,
     );
-
     await Promise.all([
       person.save({ session }),
       newUser.save({ session }),
       newUserPermission.save({ session }),
     ]);
     res.status(201).json({ message: 'Administrador registrado com sucesso' });
+    next();
   } catch (error) {
+    console.error('Erro ao criar administrador:', error);
+
     next(generateHttpError(500, 'Erro ao criar administrador', error));
   }
 };
