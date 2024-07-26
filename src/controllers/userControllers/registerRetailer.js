@@ -2,10 +2,9 @@ const User = require('../../models/User');
 const Profile = require('../../models/Profile');
 const Store = require('../../models/Store');
 const bcrypt = require('bcryptjs');
-const { registerPerson } = require('../../service/person/registerPerson');
-const {
-  registerUserPermissions,
-} = require('../../service/permission/registerUserPermissions');
+const Person = require('../../models/Person');
+const UserPermission = require('../../models/UserPermission');
+const RolePermission = require('../../models/RolePermission');
 const validateParams = require('../../utils/validateParams');
 
 require('dotenv').config();
@@ -25,6 +24,7 @@ exports.registerRetailer = async (req, res, next) => {
     storeContact,
   } = req.body;
   const session = req.session;
+  const retailerRoleId = process.env.ROLE_RETAILER_ID;
 
   validateParams({
     email,
@@ -38,18 +38,37 @@ exports.registerRetailer = async (req, res, next) => {
     storeAddress,
     storeContact,
   });
+  // Verificar se a pessoa já está cadastrada
+  try {
+    const existingPerson = await Person.findOne({ cpf }).session(session);
+    if (existingPerson) {
+      return next(generateHttpError(400, 'CPF já cadastrado'));
+    }
+  } catch (error) {
+    console.error('Erro ao verificar CPF:', error);
+    return next(generateHttpError(500, 'Erro ao verificar CPF', error));
+  }
+
+  // Verificar se as permissões da função estão disponíveis
+  let rolePermissions;
+  try {
+    rolePermissions = await RolePermission.findOne({ role: retailerRoleId })
+      .session(session)
+      .lean()
+      .select('permissions');
+
+    if (!rolePermissions) {
+      return next(generateHttpError(400, 'Permissões do role não encontradas'));
+    }
+  } catch (error) {
+    console.error('Erro ao verificar permissões do role:', error);
+    return next(
+      generateHttpError(500, 'Erro ao verificar permissões do role', error),
+    );
+  }
 
   try {
-    const person = await registerPerson(
-      {
-        cpf,
-        firstName,
-        lastName,
-        birthDate,
-      },
-      session,
-    );
-
+    const newPerson = new Person({ cpf, firstName, lastName, birthDate });
     const hashedPassword = await bcrypt.hash(password, 10);
     const retailerRoleId = process.env.ROLE_RETAILER_ID;
 
@@ -57,15 +76,17 @@ exports.registerRetailer = async (req, res, next) => {
       email,
       password: hashedPassword,
       phone,
-      person: person._id,
+      person: newPerson._id,
       role: retailerRoleId,
     });
-
-    const newUserPermission = await registerUserPermissions(
-      newUser._id,
-      retailerRoleId,
-      session,
+    const permissions = rolePermissions.permissions.map(
+      (p) => p.permissionName,
     );
+
+    const newUserPermission = new UserPermission({
+      userId: newUser._id,
+      permissions: permissions,
+    });
 
     const newProfile = new Profile({
       user: newUser._id,
@@ -82,7 +103,7 @@ exports.registerRetailer = async (req, res, next) => {
     newProfile.stores.push(newStore._id);
 
     await Promise.all([
-      person.save({ session }),
+      newPerson.save({ session }),
       newUser.save({ session }),
       newUserPermission.save({ session }),
       newProfile.save({ session }),
