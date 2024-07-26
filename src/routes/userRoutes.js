@@ -49,7 +49,7 @@ router.post(
   loginUser,
 );
 
-router.post('/logout', logoutUser);
+router.post('/logout', isAuthenticated(true), logoutUser);
 router.post(
   '/register_admin',
   isAuthenticated(true),
