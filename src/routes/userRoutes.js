@@ -15,6 +15,9 @@ const {
 } = require('../controllers/userControllers/registerAdmin.js');
 const { loginUser } = require('../controllers/userControllers/login.js');
 const { logoutUser } = require('../controllers/userControllers/logout.js');
+const {
+  createStore,
+} = require('../controllers/storeControllers/createStore.js');
 
 // Import authentication and authorization middleware
 const isAuthenticated = require('../middlewares/auth/isAuthenticated.js');
@@ -29,7 +32,7 @@ const {
 const {
   loginValidatorData,
 } = require('../middlewares/validators/loginValidatorData.js');
-
+const storeValidator = require('../middlewares/validators/storeValidator.js');
 //routes
 router.post(
   '/register_retailer',
@@ -50,6 +53,7 @@ router.post(
 );
 
 router.post('/logout', isAuthenticated(true), logoutUser);
+
 router.post(
   '/register_admin',
   isAuthenticated(true),
@@ -58,6 +62,16 @@ router.post(
   checkPersonAndUserUniquenessMiddleware,
   startTransactionMiddleware,
   registerAdmin,
+  endTransactionMiddleware,
+);
+
+router.post(
+  '/create_store',
+  isAuthenticated(true),
+  isAuthorized('create_store'),
+  storeValidator,
+  startTransactionMiddleware,
+  createStore,
   endTransactionMiddleware,
 );
 

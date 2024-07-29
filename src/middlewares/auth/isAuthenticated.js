@@ -26,6 +26,8 @@ const isAuthenticated = (shouldLoggedIn = true) => {
         validateParams({ role: decoded.role, id: decoded.id }, 401);
         req.role = decoded.role;
         req.id = decoded.id;
+        req.user = decoded;
+        req.user.profile = decoded.profile;
         return next();
       } catch (error) {
         console.error('[isAuthenticated] Erro ao verificar token:', error);

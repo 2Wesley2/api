@@ -10,18 +10,8 @@ require('dotenv').config();
 const generateHttpError = require('../../utils/generateHttpError');
 
 exports.registerRetailer = async (req, res, next) => {
-  const {
-    email,
-    password,
-    phone,
-    cpf,
-    firstName,
-    lastName,
-    birthDate,
-    storeName,
-    storeAddress,
-    storeContact,
-  } = req.body;
+  const { email, password, phone, cpf, firstName, lastName, birthDate } =
+    req.body;
   const session = req.session;
   const retailerRoleId = process.env.ROLE_RETAILER_ID;
 
@@ -34,9 +24,6 @@ exports.registerRetailer = async (req, res, next) => {
       firstName,
       lastName,
       birthDate,
-      storeName,
-      storeAddress,
-      storeContact,
     });
 
     const rolePermissions = await RolePermission.findOne({
@@ -79,7 +66,10 @@ exports.registerRetailer = async (req, res, next) => {
 
     const profilePromise = createProfile(newUser._id, session);
     await Promise.all([userPermissionPromise, profilePromise]);
-    res.status(201).json({ message: 'Usuário registrado com sucesso' });
+    res.locals.successResponse = {
+      status: 201,
+      message: 'Usuário registrado com sucesso',
+    };
   } catch (error) {
     console.error('Erro ao registrar usuário:', error);
     next(generateHttpError(500, 'Erro ao registrar usuário', error));

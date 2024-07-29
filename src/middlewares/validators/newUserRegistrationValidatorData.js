@@ -47,21 +47,6 @@ const newUserRegistrationValidatorData = [
     .isISO8601()
     .toDate()
     .withMessage('Data de nascimento deve estar no formato AAAA-MM-DD'),
-  check('storeName')
-    .exists()
-    .withMessage('Nome da loja é obrigatório')
-    .isLength({ min: 2 })
-    .withMessage('Nome da loja deve ter no mínimo 2 caracteres'),
-  check('storeAddress')
-    .exists()
-    .withMessage('Endereço da loja é obrigatório')
-    .isLength({ min: 5 })
-    .withMessage('Endereço da loja deve ter no mínimo 5 caracteres'),
-  check('storeContact')
-    .exists()
-    .withMessage('Contato da loja é obrigatório')
-    .isMobilePhone('pt-BR')
-    .withMessage('Contato da loja deve ser um número de telefone válido'),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

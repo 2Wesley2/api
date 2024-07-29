@@ -2,14 +2,20 @@ const generateHttpError = require('../../utils/generateHttpError');
 
 const endTransactionMiddleware = async (req, res, next) => {
   const session = req.session;
+
   if (!session) {
     console.error('Sessão de transação não encontrada');
-
     return next(generateHttpError(500, 'Sessão de transação não encontrada'));
   }
+
   try {
     await session.commitTransaction();
     res.locals.transactionCommitted = true;
+    if (res.locals.successResponse) {
+      return res
+        .status(res.locals.successResponse.status)
+        .json(res.locals.successResponse);
+    }
   } catch (error) {
     await session.abortTransaction();
     console.error('Erro ao confirmar a transação:', error);
@@ -17,7 +23,6 @@ const endTransactionMiddleware = async (req, res, next) => {
   } finally {
     session.endSession();
   }
-  next();
 };
 
 module.exports = endTransactionMiddleware;

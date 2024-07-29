@@ -66,7 +66,10 @@ exports.registerAdmin = async (req, res, next) => {
     const profilePromise = createProfile(newUser._id, session);
 
     await Promise.all([userPermissionPromise, profilePromise]);
-    res.status(201).json({ message: 'Administrador registrado com sucesso' });
+    res.locals.successResponse = {
+      status: 201,
+      message: 'Administrador registrado com sucesso',
+    };
     next();
   } catch (error) {
     console.error('Erro ao criar administrador:', error);
