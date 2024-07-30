@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const validateLoginCredentials = require('../../utils/validateLoginCredentials');
+const validateLoginCredentials = require('../../service/authentication/validateLoginCredentials');
 require('dotenv').config();
 const generateHttpError = require('../../utils/generateHttpError');
 const validateParams = require('../../utils/validateParams');

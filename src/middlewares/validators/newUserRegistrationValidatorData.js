@@ -1,12 +1,14 @@
 const { check, validationResult } = require('express-validator');
 const isValidCPF = require('../../utils/cpfValidator');
 const generateHttpError = require('../../utils/generateHttpError');
+const debug = require('debug')('app:newUserRegistrationValidator');
 
 const newUserRegistrationValidatorData = [
   check('cpf')
     .exists()
     .withMessage('CPF é obrigatório')
     .custom((value) => {
+      debug(`Validating CPF: ${value}`);
       if (!isValidCPF(value)) {
         throw new Error('Formato Inválido');
       }
@@ -48,6 +50,7 @@ const newUserRegistrationValidatorData = [
     .toDate()
     .withMessage('Data de nascimento deve estar no formato AAAA-MM-DD'),
   (req, res, next) => {
+    debug('Validating request data');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorDetails = errors.array().map((err) => ({
@@ -55,8 +58,10 @@ const newUserRegistrationValidatorData = [
         param: err.param,
         location: err.location,
       }));
-      next(generateHttpError(400, 'Erro de validação', errorDetails));
+      debug(`Validation errors: ${JSON.stringify(errorDetails)}`);
+      return next(generateHttpError(400, 'Erro de validação', errorDetails));
     }
+    debug('Request data is valid');
     next();
   },
 ];

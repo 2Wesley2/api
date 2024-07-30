@@ -33,15 +33,48 @@ const {
   loginValidatorData,
 } = require('../middlewares/validators/loginValidatorData.js');
 const storeValidator = require('../middlewares/validators/storeValidator.js');
+
+//depur
+const debug = require('debug')('app:routes');
+
 //routes
 router.post(
   '/register_retailer',
+  (req, res, next) => {
+    debug('Entering route /register_retailer');
+    next();
+  },
   isAuthenticated(false),
+  (req, res, next) => {
+    debug('Passed isAuthenticated');
+    next();
+  },
   newUserRegistrationValidatorData,
+  (req, res, next) => {
+    debug('Passed newUserRegistrationValidatorData');
+    next();
+  },
   checkPersonAndUserUniquenessMiddleware,
+  (req, res, next) => {
+    debug('Passed checkPersonAndUserUniquenessMiddleware');
+    next();
+  },
   startTransactionMiddleware,
+  (req, res, next) => {
+    debug('Passed startTransactionMiddleware');
+    next();
+  },
   registerRetailer,
+  (req, res, next) => {
+    debug('Passed registerRetailer');
+    next();
+  },
+
   endTransactionMiddleware,
+  (req, res, next) => {
+    debug('Passed endTransactionMiddleware');
+    next();
+  },
 );
 
 router.post(
