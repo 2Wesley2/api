@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { loginUser, logoutUser } = require('../controllers/userControllers');
+const { loginUser } = require('../controllers/authControllers/login.js');
+const { logoutUser } = require('../controllers/authControllers/logout.js');
 const isAuthenticated = require('../middlewares/auth/isAuthenticated.js');
 const loginLimiter = require('../middlewares/auth/loginRateLimiter.js');
 const {
