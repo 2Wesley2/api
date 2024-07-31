@@ -1,5 +1,3 @@
-// utils/listEndpoints.js
-
 const cleanPath = (path) => {
   return path
     .replace(/\/\?\(\?=\/\|\$\)\//g, '/')

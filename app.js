@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const userRoutes = require('./src/routes/userRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const storeRoutes = require('./src/routes/storeRoutes');
+const customerRoutes = require('./src/routes/customerRoutes'); // Adicionando a rota de customer
 const errorHandler = require('./src/middlewares/error/handleErrors');
 const listEndpoints = require('./src/utils/listEndpoints');
 
@@ -25,6 +26,9 @@ app.use('/api/auth', authRoutes);
 
 // Rotas de lojas
 app.use('/api/store', storeRoutes);
+
+// Rotas de clientes
+app.use('/api/customers', customerRoutes);
 
 // Middleware de tratamento de erros
 app.use(errorHandler);
