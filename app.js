@@ -6,6 +6,7 @@ const userRoutes = require('./src/routes/userRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const storeRoutes = require('./src/routes/storeRoutes');
 const errorHandler = require('./src/middlewares/error/handleErrors');
+const listEndpoints = require('./src/utils/listEndpoints');
 
 dotenv.config();
 
@@ -31,4 +32,11 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 // Inicia o servidor
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+  const endpoints = listEndpoints(app);
+  console.log('Endpoints configurados:');
+  endpoints.forEach((endpoint) => {
+    console.log(`${endpoint.method} ${endpoint.path}`);
+  });
+});
