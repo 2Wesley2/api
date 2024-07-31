@@ -6,7 +6,7 @@ const registerCustomer = require('../controllers/customerControllers/registerCus
 const isAuthenticated = require('../middlewares/auth/isAuthenticated.js');
 const isAuthorized = require('../middlewares/auth/isAuthorized.js');
 const customerValidator = require('../middlewares/validators/customerValidator.js');
-
+const deleteCustomer = require('../controllers/customerControllers/deleteCustomer.js');
 router.post(
   '/:storeId/register_customer',
   isAuthenticated(true),
@@ -14,6 +14,16 @@ router.post(
   customerValidator,
   startTransactionMiddleware,
   registerCustomer,
+  endTransactionMiddleware,
+);
+
+// Rota para deletar um cliente
+router.delete(
+  '/:storeId/customers/:customerId',
+  isAuthenticated(true),
+  isAuthorized('delete_customer'),
+  startTransactionMiddleware,
+  deleteCustomer,
   endTransactionMiddleware,
 );
 
